@@ -1,5 +1,5 @@
 {-# LANGUAGE RecordWildCards, OverloadedStrings #-}
-module Tonttu (Tonttu(..), t) where
+module Tonttu (Tonttu(..), parseTextFile, t) where
 
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as B
@@ -28,10 +28,10 @@ tonttu Day{..} json file parts = do
   where runner input (solverName, solver) = do
           putStr $ "Running " <> solverName <> "... "
           case (json, solver) of
-            (False, ShowSolver f)     -> print $ f input
-            (False, StringSolver f)   -> putStrLn $ f input
-            (True, ShowSolver f)      -> jsonify $ f input
-            (True, StringSolver f)    -> jsonify $ f input
+            (False, ShowSolver f)   -> print $ f input
+            (False, StringSolver f) -> putStrLn $ f input
+            (True, ShowSolver f)    -> jsonify $ f input
+            (True, StringSolver f)  -> jsonify $ f input
         m = M.fromList solvers
         finder input "input" = do
           putStr "Parser output: "
