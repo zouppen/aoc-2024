@@ -22,7 +22,7 @@ cabal install --overwrite-policy=always
 ### Debian and Ubuntu
 
 ```sh
-sudo apt install ghc-aeson-devel ghc-attoparsec-devel ghc-cmdargs-devel
+sudo apt install libghc-aeson-dev libghc-attoparsec-dev libghc-cmdargs-dev
 cabal install --overwrite-policy=always
 ```
 
