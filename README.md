@@ -57,4 +57,4 @@ During development, import module `Tonttu` which contains function
 environment.
 
 To add the assignment to the command-line utility, add the module to
-files `aoc-zouppen.cabal` and e `src/Tontut.hs`.
+files `aoc-zouppen.cabal` and `src/Tontut.hs`.
