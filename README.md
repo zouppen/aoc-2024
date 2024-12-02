@@ -1,5 +1,7 @@
 # Advent of Code "framework" for Haskell
 
+![Lambdapukki](lambdapukki.webp)
+
 This is my "framework" for Advent of Code 2024. Written to make
 parsing and output pretty-printing nice, also allowing easier
 benchmarking among friends by making it easy to run old assingments
