@@ -26,7 +26,7 @@ tonttu Day{..} json file parts = do
   case (json, null parts) of
     (False, True)  -> traverse_ (runner input) solvers
     (False, False) -> traverse_ (finder input) parts
-    (True,  True)  -> jsonify $ A.object $ map (jsonRunner input) solvers
+    (True,  True)  -> jsonify $ A.object $ "input" A..= input : map (jsonRunner input) solvers
     (True,  False) -> traverse (jsonFinder input) parts >>= jsonify . A.object
   where runner input (solverName, solver) = do
           putStr $ "Running " <> solverName <> "... "
