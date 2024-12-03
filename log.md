@@ -30,7 +30,7 @@ to use it.
 I was so bored after this that I made proper command line parser and
 small framework to help solving the assignments in upcoming days.
 
-I'm so tired about the culture war around master/main termonology so I
+I'm so tired about the culture war around master/main terminology so I
 decided to rename my AoC repository default branch as *pukki* after
 *joulupukki*, the Finnish word for Santa Claus.
 
