@@ -12,6 +12,10 @@ using this, but in case you do, the license is GNU GPL 3.0 or (at your
 option) later. You may (at your option) also send me a post card for
 Christmas.
 
+## Logbook
+
+See my notes of daily tasks on the [logbook page](log.md)
+
 ## Installation
 
 ### Fedora

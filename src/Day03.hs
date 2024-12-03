@@ -30,8 +30,9 @@ data State = State { isEnabled :: Bool
 
 -- Parsing tools
 
+-- |Skips characters until given parser succeeds
 skipUntil :: Parser a -> Parser a
-skipUntil p = p <|> (anyChar >> (skipUntil p))
+skipUntil p = p <|> (anyChar >> skipUntil p)
 
 mul :: Parser Stmt
 mul = do
@@ -65,4 +66,6 @@ evalStmt State{..} s = case s of
               else State{..}
 
 part2 :: Foldable t => t Stmt -> State
-part2 = foldl evalStmt State{isEnabled = True, total = 0}
+part2 = foldl evalStmt State{ isEnabled = True
+                            , total = 0
+                            }
