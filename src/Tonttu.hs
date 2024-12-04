@@ -17,7 +17,7 @@ newtype Tonttu = Tonttu (Bool -> FilePath -> [String] -> IO ())
 
 parseBinFile :: Parser a -> FilePath -> IO a
 parseBinFile p f = withFile f ReadMode $ \h -> do
-  out <- parseWith (B.hGetSome h (2^14)) p mempty
+  out <- parseWith (B.hGetSome h 0x4000) p mempty
   either fail pure $ eitherResult out
 
 tonttu :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> Bool -> FilePath -> [String] -> IO ()
