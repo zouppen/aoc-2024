@@ -51,3 +51,41 @@ Maybe 30 min solution again. I was quicker than expected because I
 already had the bells and whistles at hand.
 
 View my code: [Day03.hs](src/Day03.hs)
+
+## Day 4, Wednesday
+
+Not my day, not the right tools.
+
+Started over 4 times after getting super desperate about how to
+process this in a functional language.
+
+Noticed that Text index function is O(n) rather than O(1) so decided
+to fix the "framework" to use ByteStrigs instead of Text. This
+should've been the first thought and not an afterthought since AoC
+never uses weird UTF-8 input. Let's see if tomorrow there will be 🎅
+in the input and I'll start spinning again.
+
+There was nothing to parse so the solution was to just extract bounds
+from the input and write the index to coordinate conversion functions
+so that they manage with the newlines.
+
+The correct language in this case would have been plain old C. Very
+straightforward character comparison and stuff. I just didn't want to
+give up. I was **that** close to make it in C with FFI interface.
+
+After getting my shit together after hours of running around aimlessly
+I had one incorrect answer because I forgot top right to bottom left
+and bottom left to top right diagonals. After adding them, I got a
+correct answer.
+
+The second part required new approach but I was able to reuse the
+coordinate conversions. This time I got everything correct on first
+try but getting there lead me to matrix algebra and stuff like that
+which I decided not to use.
+
+I would've sacked the guy who was hopelessly pressing of buttons in
+front of a computer. Not definitely a professional. That guy was me.
+
+PS. Obfuscated variable and type names for your extra amusement.
+
+View my code: [Day04.hs](src/Day04.hs)
