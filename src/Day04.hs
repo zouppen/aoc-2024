@@ -13,6 +13,7 @@ import Day
 task :: Day Kattila Int
 task = Day { parser = kattila
            , solvers = [("part1", ShowSolver $ length . filter manteli . joulupuuro)
+                       ,("part2", ShowSolver $ length . raportoi)
                        ]
            }
 
@@ -31,6 +32,12 @@ data Bounds = Bounds { rows  :: !Int
                      } deriving (Show, Generic)
 
 instance A.ToJSON Bounds
+
+data Poro = Poro { pos    :: (Int, Int)
+                 , expect :: Char
+                 } deriving (Show)
+
+type Tokka = [Poro]
 
 kattila :: Parser Kattila
 kattila = uncurry Kattila <$> runScanner (Bounds 0 0 0) puurokauha
@@ -82,3 +89,40 @@ joulupuuro stuff = [ streak stuff dir i
 
 manteli :: String -> Bool
 manteli = startswith "XMAS"
+
+ahkiot :: [String]
+ahkiot = [ "M S\
+           \ A \
+           \M S"
+         , "S S\
+           \ A \
+           \M M"
+         , "M M\
+           \ A \
+           \S S"
+         , "S M\
+           \ A \
+           \S M"
+         ]
+
+toTokka :: String -> Tokka
+toTokka xs = filter ((' '/=).expect) $ zipWith Poro [(y, x) | y <- [-1..1] , x <- [-1..1]] xs
+
+rekiretki :: [Tokka]
+rekiretki = map toTokka ahkiot
+
+urki :: Kattila -> Int -> Poro -> Bool
+urki Kattila{..} i Poro{..} = case fromYX bounds (y+oy, x+ox) of
+  Nothing -> False
+  Just oi -> expect == B.index input oi
+  where (y, x)   = toYX bounds i
+        (oy, ox) = pos
+
+kurki :: Kattila -> Int -> Tokka -> Bool
+kurki kama i tokka = all (urki kama i) tokka
+
+vakoile :: Kattila -> Int -> Bool
+vakoile kama i = any (kurki kama i) rekiretki
+
+raportoi :: Kattila -> [Int]
+raportoi kama = filter (vakoile kama) [0..(B.length $ input kama)]
