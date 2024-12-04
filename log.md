@@ -91,8 +91,8 @@ coordinate conversions. This time I got everything correct on first
 try but getting there lead me to matrix algebra and stuff like that
 which I decided not to use.
 
-I would've sacked the guy who was hopelessly pressing of buttons in
-front of a computer. Not definitely a professional. That guy was me.
+I would've sacked the guy who was hopelessly pressing buttons in
+front of a computer. Definitely not a professional. That guy was me.
 
 PS. Obfuscated variable and type names for your extra amusement.
 
