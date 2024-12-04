@@ -2,7 +2,7 @@
 module Day01 where
 
 import Control.Applicative
-import Data.Attoparsec.Text
+import Data.Attoparsec.ByteString.Char8
 import Data.List (sort)
 import qualified Data.IntMap.Strict as IM
 

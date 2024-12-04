@@ -1,6 +1,6 @@
 module Day where
 
-import Data.Attoparsec.Text (Parser)
+import Data.Attoparsec.ByteString (Parser)
 
 data Solver a b = ShowSolver (a -> b)
                 | StringSolver (a -> String)

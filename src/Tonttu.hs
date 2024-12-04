@@ -1,13 +1,13 @@
 {-# LANGUAGE RecordWildCards, OverloadedStrings #-}
-module Tonttu (Tonttu(..), parseTextFile, t) where
+module Tonttu (Tonttu(..), parseBinFile, t) where
 
 import Data.String (fromString)
 import Data.Foldable (traverse_)
 import qualified Data.Aeson as A
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.Map.Strict as M
-import Data.Attoparsec.Text (Parser, eitherResult, parseWith)
-import Data.Text.IO (hGetChunk)
+import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
+import qualified Data.ByteString as B
 import Data.List (intercalate)
 import System.IO (IOMode(..), withFile, stdout)
 
@@ -15,14 +15,14 @@ import Day
 
 newtype Tonttu = Tonttu (Bool -> FilePath -> [String] -> IO ())
 
-parseTextFile :: Parser a -> FilePath -> IO a
-parseTextFile p f = withFile f ReadMode $ \h -> do
-  out <- parseWith (hGetChunk h) p mempty
+parseBinFile :: Parser a -> FilePath -> IO a
+parseBinFile p f = withFile f ReadMode $ \h -> do
+  out <- parseWith (B.hGetSome h (2^14)) p mempty
   either fail pure $ eitherResult out
 
 tonttu :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> Bool -> FilePath -> [String] -> IO ()
 tonttu Day{..} json file parts = do
-  input <- parseTextFile parser file
+  input <- parseBinFile parser file
   case (json, null parts) of
     (False, True)  -> traverse_ (runner input) solvers
     (False, False) -> traverse_ (finder input) parts
@@ -49,7 +49,7 @@ tonttu Day{..} json file parts = do
         m = M.fromList solvers
         partList = intercalate ", " $ "input" : map fst solvers
         jsonify :: A.ToJSON a => a -> IO ()
-        jsonify a = B.hPut stdout $ A.encode a <> "\n"
+        jsonify a = BL.hPut stdout $ A.encode a <> "\n"
 
 t :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => k -> Day a b -> M.Map k Tonttu
 t i task = M.singleton i $ Tonttu $ tonttu task

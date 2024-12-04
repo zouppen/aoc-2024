@@ -1,7 +1,7 @@
 module Day02 where
 
 import Control.Applicative
-import Data.Attoparsec.Text
+import Data.Attoparsec.ByteString.Char8
 import Data.List (group)
 
 import Day

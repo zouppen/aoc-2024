@@ -57,7 +57,7 @@ For full info, run `~/.cabal/bin/aoc-zouppen-2024 --help`.
 ## Tips and tricks
 
 During development, import module `Tonttu` which contains function
-`parseTextFile` which can be used for running the parser in REPL
+`parseBinFile` which can be used for running the parser in REPL
 environment.
 
 To add the assignment to the command-line utility, add the module to
