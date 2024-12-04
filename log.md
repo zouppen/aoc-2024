@@ -2,6 +2,8 @@
 
 ## Day 1, Sunday
 
+Assignment: [Historian Hysteria](https://adventofcode.com/2024/day/1)
+
 Started in the evening. Started using Haskell because I had been using
 Haskell in a company project in last few weeks and had the libraries
 in fresh memory.
@@ -18,6 +20,8 @@ wandering in Hackage library docs.
 View my code: [Day01.hs](src/Day01.hs)
 
 ## Day 2, Monday
+
+Assignment: [Red-Nosed Reports](https://adventofcode.com/2024/day/2)
 
 A little bit dull CS1 grade assignment. First part could've be done in a
 spreadsheet but the second probably not since it required branching.
@@ -38,6 +42,8 @@ View my code: [Day02.hs](src/Day02.hs)
 
 ## Day 3, Tuesday
 
+Assignment: [Mull It Over](https://adventofcode.com/2024/day/3)
+
 I really didn't do the full parser initially. I hacked a very quick
 and dirty parser first and I wrote a proper parser in Part 2. I reused
 the more complete parser from Part 2 and processed the output with
@@ -53,6 +59,8 @@ already had the bells and whistles at hand.
 View my code: [Day03.hs](src/Day03.hs)
 
 ## Day 4, Wednesday
+
+Assignment: [Ceres Search](https://adventofcode.com/2024/day/4)
 
 Not my day, not the right tools.
 
