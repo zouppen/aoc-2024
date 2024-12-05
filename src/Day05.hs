@@ -74,10 +74,10 @@ comparator rules a b = case (aFirst, bFirst) of
           Nothing -> False
           Just s -> IS.member b s
 
--- |Get a middle value of a list or error if the list is odd-length.
+-- |Get a middle value of a list or an error if the list is odd-length.
 middle :: [a] -> a
 middle xs = if oddity == 0
-            then error "Not odd number"
+            then error "List length is even"
             else xs !! mid
   where (mid, oddity) = quotRem (length xs) 2
 
