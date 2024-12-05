@@ -102,7 +102,7 @@ View my code: [Day04.hs](src/Day04.hs)
 
 Assignment: [Print Queue](https://adventofcode.com/2024/day/5)
 
-Okay, this time it was Haskell day. Even though I could've been fast,
+Okay, this time it was a Haskell day. Even though I could've been fast,
 it was morning and didn't manage to speedcode. It took something like
 1h 13min to complete the Part 1 and about two minutes to complete the
 second.
@@ -116,12 +116,12 @@ I was happy that I had my CS degree, immediately noticed that this is
 a case for a user-supplied comparator. So I did it and we can enjoy a
 nice and smooth *O(n log n)* complexity in computation. Well, in AoC,
 the assignments are simple enough to brute-force anyway. But it gives
-a warm fuzzy feeling, like a glass of warm mulled wine.
+a warm fuzzy feeling, like a glass of warm mulled wine. 🍵
 
-PS. In case you've wondered why there's JSON instances in my code even
-though I'm not processing JSON. It's for the command line switch `-j`
-which dumps the parsed output to JSON which is quick to process with
-`jq` if I needed to. In most cases I write them afterwards, not while
-the timer runs.
+PS. In case you've wondered why there are JSON instances in my code
+even though I'm not processing JSON. It's for the command line switch
+`-j` which dumps the parsed output to JSON which is quick to process
+with `jq` if I needed to. In most cases I write them afterwards, not
+while the timer runs.
 
 View my code: [Day05.hs](src/Day05.hs)
