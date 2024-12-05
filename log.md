@@ -119,8 +119,8 @@ the assignments are simple enough to brute-force anyway. But it gives
 a warm fuzzy feeling, like a glass of warm mulled wine. 🍵
 
 Afterwards, while cleaning up code, I noticed I had a bug in the
-comparator, where I did compare a < b correctly but b < a not because
-quick copypasting around. Well, It didn't hit, but a fixed version is
+comparator, where I did compare `a < b` correctly but not `a > b` because
+of quick copypasting around. Well, it didn't hit, but a fixed version is
 now in the repo.
 
 PS. In case you've wondered why there are JSON instances in my code
