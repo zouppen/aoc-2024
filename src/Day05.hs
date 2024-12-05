@@ -41,13 +41,13 @@ rule = do
   a <- decimal
   _ <- char '|'
   b <- decimal
-  _ <- endOfLine
+  endOfLine
   pure (a, IS.singleton b)
 
 update :: Parser Update
 update = do
   a <- decimal `sepBy` char ','
-  _ <- endOfLine
+  endOfLine
   pure $ Update a
 
 lahjakori :: Parser Lahjakori
