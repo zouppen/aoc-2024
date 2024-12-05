@@ -61,18 +61,14 @@ lahjakori = do
 -- Business logic
 
 comparator :: IM.IntMap IS.IntSet -> Int -> Int -> Ordering
-comparator rules a b = case (aFirst, bFirst) of
+comparator rules a b = case (isFirst a b, isFirst b a) of
   (True, False)  -> LT
   (False, True)  -> GT
   (False, False) -> EQ
   _ -> error "Ei ole kilttiä tämä ollenkaan"
-  where thisRule = IM.lookup b rules
-        bFirst = case thisRule of
+  where isFirst n1 n2 = case IM.lookup n1 rules of
           Nothing -> False
-          Just s -> IS.member a s
-        aFirst = case thisRule of
-          Nothing -> False
-          Just s -> IS.member b s
+          Just s -> IS.member n2 s
 
 -- |Get a middle value of a list or an error if the list is odd-length.
 middle :: [a] -> a

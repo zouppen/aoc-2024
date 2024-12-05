@@ -105,7 +105,7 @@ Assignment: [Print Queue](https://adventofcode.com/2024/day/5)
 Okay, this time it was a Haskell day. Even though I could've been fast,
 it was morning and didn't manage to speedcode. It took something like
 1h 13min to complete the Part 1 and about two minutes to complete the
-second.
+second, both without retrys.
 
 Initially, I read the instructions incorrectly and thought what would
 come in Part 2 would've been the first part. No bad feelings though,
@@ -117,6 +117,11 @@ a case for a user-supplied comparator. So I did it and we can enjoy a
 nice and smooth *O(n log n)* complexity in computation. Well, in AoC,
 the assignments are simple enough to brute-force anyway. But it gives
 a warm fuzzy feeling, like a glass of warm mulled wine. 🍵
+
+Afterwards, while cleaning up code, I noticed I had a bug in the
+comparator, where I did compare a < b correctly but b < a not because
+quick copypasting around. Well, It didn't hit, but a fixed version is
+now in the repo.
 
 PS. In case you've wondered why there are JSON instances in my code
 even though I'm not processing JSON. It's for the command line switch
