@@ -6,6 +6,7 @@ import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
 import qualified Data.Aeson as A
+import Control.Parallel.Strategies
 import GHC.Generics
 
 import Day
@@ -13,9 +14,12 @@ import Day
 task :: Day Grid Int
 task = Day { parser = cells emptyGrid
            , solvers = [("part1", ShowSolver $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a)
-                       ,("part2", ShowSolver $ length . filter gridHasLoop . addObsts)
+                       ,("part2", ShowSolver $ length . filter id .
+                          withStrategy (parListChunk 12 rseq) .
+                          map gridHasLoop . addObsts)
                        ]
            }
+
 
 data Direction = ToLeft
                | ToRight
