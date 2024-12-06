@@ -130,3 +130,37 @@ with `jq` if I needed to. In most cases I write them afterwards, not
 while the timer runs.
 
 View my code: [Day05.hs](src/Day05.hs)
+
+## Day 6, Friday
+
+Assignment: [Guard Gallivant](https://adventofcode.com/2024/day/6)
+
+Alright, it's a day off. It's the Finnish independence day. Last
+evening I had couple of beers with bunch of nerds, one of them was
+also doing AoC and does it way more competitively. Has a wake up every
+morning at 07:00 (05:00 UTC) so he starts immediately when the
+assignment goes live. I often start at some point in the morning, the
+earliest so far was at 09:30.
+
+This morning I wanted to make it easy and not competitive at all. I
+wanted to make a proper parser since the last table based assignment
+was yesterday (Day 4) and I started over multiple times. This time I
+wanted to parse the input properly so instead of a table I had a set
+of obstacles and bounds of the arena. It took too long and my day
+schedule went out of the window.
+
+After hours of hacking I finally managed to book train and plane
+tickets to
+[38C3](https://events.ccc.de/congress/2024/infos/index.html) and even
+go to a sauna. It was very relaxing, better than ragecoding AoC
+assignments.
+
+The code is rather beautiful in my opinion, but naming of parsers
+could be better. The efficiency could be better, since I just iterate
+over all possible obstacle positions in part 2. I just didn't have a
+good idea about any drastically more efficient algorithm.
+
+Part 2 run time on my laptop was 19 seconds (non-threaded) and under 6
+seconds when parallelized.
+
+View my code: [Day06.hs](src/Day06.hs)
