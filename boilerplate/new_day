@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+$whole_doc = new DOMDocument();
+$snippet = new DOMDocument();
+$whole_doc->loadHTMLFile('/tmp/Day 7 - Advent of Code 2024.html');
+//$whole_doc->loadHTMLFile('/tmp/Day 1 - Advent of Code 2023.html');
+//var_dump($whole_doc->getElementsByTagName('article'));
+
+$title = null;
+
+// This dangerous-looking while is needed because adoptNode() alters
+// the iterator. So this runs until there are articles left.
+while (true) {
+    foreach ($whole_doc->getElementsByTagName('article') as $article) {
+        // Adopt a node
+        $snippet->appendChild($snippet->adoptNode($article));
+
+        // Mangle the title
+        foreach ($article->getElementsByTagName("h2") as $h2) {
+            if (preg_match('/^-* (.*) -*$/', $h2->textContent, $matches) !== 1) {
+                // No match, no touch
+                break;
+            }
+
+            // Store title
+            if ($title === null) {
+                // Upgrade to h1
+                $h1 = $snippet->createElement('h1');
+                $h1->textContent = $matches[1];
+                $h2->replaceWith($h1);
+
+                // Store the title
+                $title = $matches[1];
+            } else {
+                // Just mangle, not replace
+                $h2->textContent = $matches[1];
+            }
+
+            // Stop after 1st h2 element
+            break;
+        }
+        continue 2;
+    }
+    break;
+}
+
+$fds = [
+    0 => ['pipe', 'r'],
+    1 => STDOUT,
+    2 => STDERR,
+];
+
+$res = proc_open('pandoc -f html -o /tmp/kiva.pdf', $fds, $pipes);
+if ($res === false) {
+    die('Unable to run pandoc');
+}
+
+if (fwrite($pipes[0], $snippet->saveHTML()) === false) {
+    die('Pandoc did not consume input');
+}
+var_dump($title);
+proc_close($res);
+//$doc->loadHTML("<html><body>Test<br></body></html>");
+//echo
