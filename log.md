@@ -164,3 +164,27 @@ Part 2 run time on my laptop was 19 seconds (non-threaded) and under 6
 seconds when parallelized.
 
 View my code: [Day06.hs](src/Day06.hs)
+
+## Day 7, Saturday
+
+Assignment: [Bridge Repair](https://adventofcode.com/2024/day/7)
+
+Very haskellish task. Super straightforward, in theory.
+
+At first I was accidentally first doing right-to-left evaluation and
+then fixing the algorithm to left-to-right but so that every other
+element it was doing right-to-left. The mistake was I was using two
+functions, `evalLTR` and `evalRTL` and I was calling the other
+recursively. 🤣 I tilted.
+
+Due to tilting the easy assignment went to a try-and-fail loop, and I
+got 5 minute ban from AoC. The ban lead to me reading my code with a
+thought and found `evalLTR` in `evalRTL` function and the part 1
+solved immediately.
+
+Part 2 was just adding a new number concatenation operator which I did
+using just Show and Read, not fancy and optimized base 10 shifting.
+
+Run time 3.5 seconds on my laptop without threading.
+
+View my code: [Day06.hs](src/Day07.hs)
