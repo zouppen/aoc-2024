@@ -187,4 +187,4 @@ using just Show and Read, not fancy and optimized base 10 shifting.
 
 Run time 3.5 seconds on my laptop without threading.
 
-View my code: [Day06.hs](src/Day07.hs)
+View my code: [Day07.hs](src/Day07.hs)
