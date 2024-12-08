@@ -9,9 +9,9 @@ import qualified Data.IntMap.Strict as IM
 import Day
 
 task :: Day ([Int], [Int]) Int
-task = Day { parser = everything
-           , solvers = [("part1", ShowSolver part1)
-                       ,("part2", ShowSolver part2)
+task = Day { parser  = everything
+           , solvers = [ part1 doPart1
+                       , part2 doPart2
                        ]
            }
 
@@ -33,11 +33,11 @@ pair = do
 
 -- Solving
 
-part1 :: ([Int], [Int]) -> Int
-part1 (pukit, muorit) = sum $ zipWith dist (sort pukit) (sort muorit)
+doPart1 :: ([Int], [Int]) -> Int
+doPart1 (pukit, muorit) = sum $ zipWith dist (sort pukit) (sort muorit)
   where dist pukki muori = abs $ pukki - muori
 
-part2 :: ([Int], [Int]) -> Int
-part2 (pukit, muorit) = sum $ map tonttu pukit
+doPart2 :: ([Int], [Int]) -> Int
+doPart2 (pukit, muorit) = sum $ map tonttu pukit
   where himmeli = IM.fromListWith (+) $ map (,1) muorit
         tonttu pukki = pukki * IM.findWithDefault 0 pukki himmeli

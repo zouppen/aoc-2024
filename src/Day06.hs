@@ -12,11 +12,11 @@ import Grid
 import Day
 
 task :: Day (Grid Objects) Int
-task = Day { parser = gridParser cell $ Objects mempty mempty
-           , solvers = [("part1", ShowSolver $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a)
-                       ,("part2", ShowSolver $ length . filter id .
-                          withStrategy (parListChunk 12 rseq) .
-                          map gridHasLoop . addObsts)
+task = Day { parser  = gridParser cell $ Objects mempty mempty
+           , solvers = [ part1 $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a
+                       , part2 $ length . filter id .
+                         withStrategy (parListChunk 12 rseq) .
+                         map gridHasLoop . addObsts
                        ]
            }
 

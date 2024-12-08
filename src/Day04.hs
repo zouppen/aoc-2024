@@ -11,9 +11,9 @@ import GHC.Generics
 import Day
 
 task :: Day Kattila Int
-task = Day { parser = kattila
-           , solvers = [("part1", ShowSolver $ length . filter manteli . joulupuuro)
-                       ,("part2", ShowSolver $ length . raportoi)
+task = Day { parser  = kattila
+           , solvers = [ part1 $ length . filter manteli . joulupuuro
+                       , part2 $ length . raportoi
                        ]
            }
 

@@ -10,9 +10,9 @@ import GHC.Generics
 import Day
 
 task :: Day [Row] Integer
-task = Day { parser = everything
-           , solvers = [("part1", ShowSolver $ sumPossibles [(+), (*)])
-                       ,("part2", ShowSolver $ sumPossibles [(+), (*), cc])
+task = Day { parser  = everything
+           , solvers = [ part1 $ sumPossibles [(+), (*)]
+                       , part2 $ sumPossibles [(+), (*), cc]
                        ]
            }
 

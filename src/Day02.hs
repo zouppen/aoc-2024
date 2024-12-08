@@ -7,9 +7,9 @@ import Data.List (group)
 import Day
 
 task :: Day [[Int]] Int
-task = Day { parser = everything
-           , solvers = [("part1", ShowSolver $ length . filter isGoodRow)
-                       ,("part2", ShowSolver $ length . filter isGoodRow2)
+task = Day { parser  = everything
+           , solvers = [ part1 $ length . filter isGoodRow
+                       , part2 $ length . filter isGoodRow2
                        ]
            }
 

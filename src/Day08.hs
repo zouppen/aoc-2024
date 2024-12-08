@@ -12,9 +12,9 @@ import Grid
 import Day
 
 task :: Day (Grid Antennas) Int
-task = Day { parser = gridParser cell $ Antennas mempty
-           , solvers = [("part1", ShowSolver $ length . tonttujoukko antinodesNoRepeat)
-                       ,("part2", ShowSolver $ length . part2)
+task = Day { parser  = gridParser cell $ Antennas mempty
+           , solvers = [ part1 $ length . maksalaatikko antinodesNoRepeat
+                       , part2 $ length . lanttulaatikko
                        ]
            }
 
@@ -77,10 +77,10 @@ antinodeSet producer grid setIn = S.fromList $
                                   S.toList setIn
 
 -- |Produces coordinates from all antinodes combined (excl. towers themselves)
-tonttujoukko :: Producer Int -> Grid Antennas -> Coords
-tonttujoukko f g = mconcat $ M.elems $ M.map (antinodeSet f g) $ antennas g
+maksalaatikko :: Producer Int -> Grid Antennas -> Coords
+maksalaatikko f g = mconcat $ M.elems $ M.map (antinodeSet f g) $ antennas g
 
 -- |Combine antinodes with antenna locations to get correct output.
-part2 :: Grid Antennas -> Coords
-part2 g = tonttujoukko (antinodesRepeat g) g <>
-          (mconcat $ M.elems $ antennas g)
+lanttulaatikko :: Grid Antennas -> Coords
+lanttulaatikko g = maksalaatikko (antinodesRepeat g) g <>
+                   (mconcat $ M.elems $ antennas g)

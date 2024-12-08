@@ -12,9 +12,9 @@ import GHC.Generics
 import Day
 
 task :: Day Lahjakori Int
-task = Day { parser = lahjakori
-           , solvers = [("part1", ShowSolver $ joululaulu True)
-                       ,("part2", ShowSolver $ joululaulu False)
+task = Day { parser  = lahjakori
+           , solvers = [ part1 $ joululaulu True
+                       , part2 $ joululaulu False
                        ]
            }
 

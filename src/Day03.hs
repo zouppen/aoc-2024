@@ -9,9 +9,9 @@ import GHC.Generics
 import Day
 
 task :: Day [Stmt] Int
-task = Day { parser = stmts
-           , solvers = [("part1", ShowSolver $ total . part2 . filter (/= StmtDont))
-                       ,("part2", ShowSolver $ total . part2)
+task = Day { parser  = stmts
+           , solvers = [ part1 $ total . doTask . filter (/= StmtDont)
+                       , part2 $ total . doTask
                        ]
            }
 
@@ -65,7 +65,7 @@ evalStmt State{..} s = case s of
               then State{total = total + (a*b), ..}
               else State{..}
 
-part2 :: Foldable t => t Stmt -> State
-part2 = foldl evalStmt State{ isEnabled = True
-                            , total = 0
-                            }
+doTask :: Foldable t => t Stmt -> State
+doTask = foldl evalStmt State{ isEnabled = True
+                             , total = 0
+                             }
