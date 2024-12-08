@@ -193,17 +193,24 @@ View my code: [Day07.hs](src/Day07.hs)
 
 Assignment: [Resonant Collinearity](https://adventofcode.com/2024/day/8)
 
-Waking up late, doing it easy. I was finished about 18:45 local time.
+Waking up late, doing it easy and slow. I was finished about 18:45
+local time.
 
-I noticed wastl likes grids and it was just the day before yesterday
-when another grid task was on AoC. So I generalized the grid parser
-from Day 6 which took me maybe even an hour.
+I noticed AoC author wastl likes grids. It was just the day before
+yesterday when another grid task was on AoC. So I generalized the grid
+parser from Day 6 which took me maybe even an hour.
 
-Once again, I didn't read the part 2 assignment text properly and get
+Once again, I didn't read the part 2 assignment text properly and got
 a bit desperate and had an hour break after part 1. Then I just
 noticed that I can merge antenna locations with the "antinodes" list
 to get the correct output because `antinodesRepeat` does not add
 antenna positions to the set.
+
+Once again I was refactoring the code after finishing part 2 and
+before committing. So the actual code you see in this repo with all
+type definitions and comments is not done before submitting the
+answer. Today I was a bit disorganized so I added most of the comments
+while I was coding.
 
 Yesterday evening I made [new_day](tools/new_day) script which
 downloads the puzzle text and converts it to PDF and gets puzzle
