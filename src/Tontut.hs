@@ -8,6 +8,7 @@ import qualified Day04
 import qualified Day05
 import qualified Day06
 import qualified Day07
+import qualified Day08
 import Data.Map.Strict (Map)
 
 tontut :: Map Int Tonttu
@@ -18,4 +19,5 @@ tontut = t 1 Day01.task <>
          t 5 Day05.task <>
          t 6 Day06.task <>
          t 7 Day07.task <>
+         t 8 Day08.task <>
          mempty

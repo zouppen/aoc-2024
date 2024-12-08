@@ -2,12 +2,14 @@
 module Grid ( Grid(..)
             , bounds
             , gridParser
+            , renderGrid
             ) where
 
 import Control.Applicative
 import Control.Monad (unless)
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Aeson as A
+import qualified Data.ByteString.Char8 as B
 import GHC.Generics
 import Text.Printf
 
@@ -48,3 +50,10 @@ nextRow Grid{..} = if rows == 0 || cols == trail
 validate :: MonadFail f => Grid a -> f ()
 validate Grid{..} = unless (trail == 0) $ fail $
   printf "Trailing row %d length %d is uneven" rows trail
+
+renderGrid :: Grid a -> ((Int, Int) -> Char) -> B.ByteString
+renderGrid Grid{..} charFunc = fst $ B.unfoldrN size f (0,0)
+  where size = (cols+1)*rows
+        f (x,y) = Just $ if x == cols
+                             then ('\n', (0, y+1))
+                             else (charFunc (x,y), (x+1, y))
