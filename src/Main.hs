@@ -46,16 +46,19 @@ main = do
   let file day = case input of
         Just x -> x
         Nothing -> printf "inputs/%02d" day
+      daysOrAll = case days of
+        [] -> M.keys tontut
+        a  -> a
       dayList = intercalate ", " $ map show $ M.keys tontut
       dayFail = fail $ "Not a valid day. Valid days: " <> dayList
   -- Start running
   if json
-    then do values <- forM days $ \day -> case M.lookup day tontut of
+    then do values <- forM daysOrAll $ \day -> case M.lookup day tontut of
               Just Tonttu{..} -> jsonRunner (file day) part
               Nothing         -> dayFail
-            printJSON $ M.fromList $ zip days values
-    else do forM_ days $ \day -> do
-              printf "-- Day %d ---\n" day
+            printJSON $ M.fromList $ zip daysOrAll values
+    else do forM_ daysOrAll $ \day -> do
+              printf "--- Day %d ---\n" day
               case M.lookup day tontut of
                 Just Tonttu{..} -> plainRunner (file day) part
                 Nothing         -> dayFail
