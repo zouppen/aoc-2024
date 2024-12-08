@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Day08 where
 
 import Control.Applicative
