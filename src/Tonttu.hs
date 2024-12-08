@@ -10,7 +10,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
 import qualified Data.ByteString as B
-import System.IO (IOMode(..), withFile, stdout)
+import System.IO (IOMode(..), withFile, stdout, hFlush)
 
 import Day
 
@@ -31,6 +31,7 @@ tonttu Day{..} json file parts = do
     (True,  False) -> traverse (jsonFinder input) parts >>= jsonify . A.object
   where runner input (solverName, solver) = do
           T.putStr $ "Running " <> solverName <> "... "
+          hFlush stdout
           case solver of
             ShowSolver f   -> print $ f input
             StringSolver f -> putStrLn $ f input
