@@ -11,8 +11,10 @@ data Day a b = Day { parser  :: Parser a
                    , solvers :: [(Text, Solver a b)]
                    }
 
+-- Shortcuts for defining the parts in individual day modules
+
 part1 :: (a -> b) -> (Text, Solver a b)
 part1 x = ("part1", ShowSolver x)
 
 part2 :: (a -> b) -> (Text, Solver a b)
-part2 x = ("part1", ShowSolver x)
+part2 x = ("part2", ShowSolver x)
