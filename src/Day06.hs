@@ -2,9 +2,9 @@
 module Day06 where
 
 import Control.Applicative
+import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
-import qualified Data.Aeson as A
 import Control.Parallel.Strategies
 import GHC.Generics
 import Grid
@@ -26,20 +26,20 @@ data Direction = ToLeft
                | ToDown
                deriving (Show, Eq, Ord, Generic)
 
-instance A.ToJSON Direction
+instance ToJSON Direction
 
 data Patrol = Patrol { patrolY    :: !Int
                      , patrolX    :: !Int
                      , patrolDir  :: !Direction
                      } deriving (Show, Eq, Ord, Generic)
 
-instance A.ToJSON Patrol
+instance ToJSON Patrol
 
 data Objects = Objects { obst    :: S.Set (Int, Int) -- 🍐🍎
                        , patrols :: ![Patrol]
                        } deriving (Show, Generic)
 
-instance A.ToJSON Objects
+instance ToJSON Objects
 
 -- Parsing
 

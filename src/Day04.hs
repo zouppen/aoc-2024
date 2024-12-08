@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 module Day04 where
 
+import qualified Data.Aeson as A
 import Data.Attoparsec.ByteString
 import qualified Data.ByteString.Char8 as B
 import Data.Word (Word8)
 import Data.List.Utils (startswith)
-import qualified Data.Aeson as A
 import GHC.Generics
 
 import Day

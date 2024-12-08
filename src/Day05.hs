@@ -2,8 +2,8 @@
 module Day05 where
 
 import Control.Applicative
+import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
-import qualified Data.Aeson as A
 import qualified Data.IntMap.Strict as IM
 import qualified Data.IntSet as IS
 import Data.List
@@ -24,15 +24,15 @@ data Lahjakori = Lahjakori { rules   :: Rules
                            , updates :: [Update]
                            } deriving (Show, Generic)
 
-instance A.ToJSON Lahjakori
+instance ToJSON Lahjakori
 
 newtype Rules = Rules (IM.IntMap IS.IntSet) deriving (Show, Generic)
 
-instance A.ToJSON Rules
+instance ToJSON Rules
 
 newtype Update = Update [Int] deriving (Show, Generic)
 
-instance A.ToJSON Update
+instance ToJSON Update
 
 -- Parsing
 

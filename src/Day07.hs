@@ -3,8 +3,8 @@ module Day07 where
 
 import Control.Applicative
 import Control.Monad (guard)
+import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
-import qualified Data.Aeson as A
 import GHC.Generics
 
 import Day
@@ -20,7 +20,7 @@ data Row = Row { expected :: Integer
                , operands :: [Integer]
                } deriving (Show, Eq, Generic)
 
-instance A.ToJSON Row
+instance ToJSON Row
 
 everything :: Parser [Row]
 everything = many row <* endOfInput
