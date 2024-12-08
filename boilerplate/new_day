@@ -108,10 +108,32 @@ if (file_put_contents($puzzle_input_file, $input) === false) {
     die("Unable to write puzzle input\n");
 }
 
-// Day name fiddle for the log
-$ts =  mktime(0, 0, 0, 12, $day, 2024);
-$dayname = date('l', $ts);
-
 print("Puzzle description written to $pdf_file\n");
 print("Puzzle input written to $puzzle_input_file\n");
-print("Logbook text:\n## Day $day, $dayname\n\nAssignment: [$title]($url_base)\n\nView my code: [Day$day_padded.hs](src/Day$day_padded.hs)\n");
+
+// Logbook info such as file name and day of week
+$ts =  mktime(0, 0, 0, 12, $day, 2024);
+$dayname = date('l', $ts);
+$logbook_filename = __DIR__.'/../log.md';
+
+// Logbook append
+$handle = fopen($logbook_filename, 'c+');
+if ($handle === false) {
+    die("Unable to open logbook\n");
+}
+$contents = stream_get_contents($handle);
+if ($contents === false) {
+    die("Unable to read logbook\n");
+}
+// Find if there's something which resembles puzzle link
+if (strstr($contents, "($url_base)") === false) {
+    // We add the log boilerplate
+    $log = "\n## Day $day, $dayname\n\nAssignment: [$title]($url_base)\n\nView my code: [Day$day_padded.hs](src/Day$day_padded.hs)\n";
+
+    if (fwrite($handle, $log) === false) {
+        die("Unable to append to logbook");
+    }
+    print("Adding logbook template to $logbook_filename\n");
+} else {
+    print("Logbook already populated, skipping that part\n");
+}
