@@ -3,6 +3,7 @@ module Main where
 
 import System.Console.CmdArgs.Implicit
 import qualified Data.Map.Strict as M
+import Data.Text (Text)
 import Data.List (intercalate)
 import Text.Printf
 
@@ -10,7 +11,7 @@ import Tontut
 
 data Args = Args { day    :: Int
                  , input  :: Maybe FilePath
-                 , part   :: [String]
+                 , part   :: [Text]
                  , json   :: Bool
                  } deriving (Show, Data, Typeable)
 
