@@ -1,25 +1,24 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 module Day06 where
 
-import Text.Printf
 import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
 import qualified Data.Aeson as A
 import Control.Parallel.Strategies
 import GHC.Generics
+import Grid
 
 import Day
 
-task :: Day Grid Int
-task = Day { parser = cells emptyGrid
+task :: Day (Grid Objects) Int
+task = Day { parser = gridParser cell $ Objects mempty mempty
            , solvers = [("part1", ShowSolver $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a)
                        ,("part2", ShowSolver $ length . filter id .
                           withStrategy (parListChunk 12 rseq) .
                           map gridHasLoop . addObsts)
                        ]
            }
-
 
 data Direction = ToLeft
                | ToRight
@@ -36,47 +35,24 @@ data Patrol = Patrol { patrolY    :: !Int
 
 instance A.ToJSON Patrol
 
-data Grid = Grid { obst    :: S.Set (Int, Int) -- 🍐🍎
-                 , patrols :: ![Patrol]
-                 , rows    :: !Int
-                 , cols    :: !Int
-                 , trail   :: !Int
-                 } deriving (Show, Generic)
+data Objects = Objects { obst    :: S.Set (Int, Int) -- 🍐🍎
+                       , patrols :: ![Patrol]
+                       } deriving (Show, Generic)
 
-instance A.ToJSON Grid
+instance A.ToJSON Objects
 
 -- Parsing
 
-emptyGrid :: Grid
-emptyGrid = Grid mempty mempty 0 0 0
+cell :: Grid Objects -> Parser Objects
+cell g = (anyChar >>= patrol >>= pure . addPatrol g) <|>
+         (anyChar >>= obstacle >>= addObstacle g)
 
-cells :: Grid -> Parser Grid
-cells g = (endOfInput >> pure g) <|> (cell g >>= cells)
+addObstacle :: Applicative f => Grid Objects -> Bool -> f Objects
+addObstacle Grid{..} True = pure stuff{obst = S.insert (rows, trail) $ obst stuff}
+addObstacle Grid{..} False = pure stuff
 
-cell :: Grid -> Parser Grid
-cell g = choice [ endOfLine >> nextRow g
-                , anyChar >>= patrol >>= addPatrol g >>= nextCol
-                , anyChar >>= obstacle >>= addObstacle g >>= nextCol
-                ]
-
-addObstacle :: Applicative f => Grid -> Bool -> f Grid
-addObstacle Grid{..} True = pure Grid{obst = S.insert (rows, trail) obst, ..}
-addObstacle g False = pure g
-
-addPatrol :: Applicative f => Grid -> Direction -> f Grid
-addPatrol Grid{..} d = pure Grid{patrols = Patrol rows trail d : patrols, ..}
-
-nextCol :: Applicative f => Grid -> f Grid
-nextCol Grid{..} = pure Grid{trail = trail + 1, ..}
-
-nextRow :: MonadFail f => Grid -> f Grid
-nextRow Grid{..} = if rows == 0 || cols == trail
-                   then pure Grid{ rows = rows + 1
-                                 , cols = trail
-                                 , trail = 0
-                                 , ..
-                                 }
-                   else fail $ printf "Row %d length %d is uneven" rows trail
+addPatrol :: Grid Objects -> Direction -> Objects
+addPatrol Grid{..} d = stuff{patrols = Patrol rows trail d : patrols stuff}
 
 patrol :: Alternative f => Char -> f Direction
 patrol c = case c of
@@ -112,17 +88,17 @@ turnRight d = case d of
   ToRight -> ToDown
   ToDown  -> ToLeft
 
-movePatrol :: Grid -> Patrol -> Patrol
-movePatrol Grid{..} origP = if S.member (patrolY movedP, patrolX movedP) obst
+movePatrol :: Grid Objects -> Patrol -> Patrol
+movePatrol Grid{..} origP = if S.member (patrolY movedP, patrolX movedP) $ obst stuff
                             then origP{ patrolDir = turnRight (patrolDir origP) }
                             else movedP
   where movedP = patrolFwd origP
 
-isInside :: Grid -> Patrol -> Bool
+isInside :: Grid a -> Patrol -> Bool
 isInside Grid{..} Patrol{..} = patrolY >= 0 && patrolY < rows &&
                                patrolX >= 0 && patrolX < cols
 
-travel :: Grid -> Patrol -> [Patrol]
+travel :: Grid Objects -> Patrol -> [Patrol]
 travel grid pat = if isIn
                   then next : travel grid next
                   else []
@@ -140,19 +116,19 @@ hasLoop s (x:xs) = if S.member x s
                     else hasLoop (S.insert x s) xs
 hasLoop _ []      = False -- Guard walked out
 
-gridHasLoop :: Grid -> Bool
+gridHasLoop :: Grid Objects -> Bool
 gridHasLoop grid = hasLoop mempty $ travel grid $ singlePatrol grid
 
-singlePatrol :: Grid -> Patrol
-singlePatrol Grid{..} = case patrols of
+singlePatrol :: Grid Objects -> Patrol
+singlePatrol g = case patrols (stuff g) of
   [a] -> a
   _   -> error "Expecting exactly 1 patrol"
 
-addObsts :: Grid -> [Grid]
-addObsts Grid{..} = [ Grid{obst = S.insert (y, x) obst, ..}
+addObsts :: Grid Objects -> [Grid Objects]
+addObsts Grid{..} = [ Grid{stuff = stuff{obst = S.insert (y, x) (obst stuff)}, ..}
                     | y <- [0..rows-1]
                     , x <- [0..cols-1]
-                    , not $ any (isStart y x) patrols
-                    , S.notMember (y,x) obst
+                    , not $ any (isStart y x) $ patrols stuff
+                    , S.notMember (y,x) $ obst stuff
                     ]
   where isStart y x Patrol{..} = patrolY == y && patrolX == x
