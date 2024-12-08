@@ -110,7 +110,7 @@ if (file_put_contents($puzzle_input_file, $input) === false) {
 
 // Day name fiddle for the log
 $ts =  mktime(0, 0, 0, 12, $day, 2024);
-$dayname = date('D', $ts);
+$dayname = date('l', $ts);
 
 print("Puzzle description written to $pdf_file\n");
 print("Puzzle input written to $puzzle_input_file\n");
