@@ -22,7 +22,7 @@ Steal AoC cookie and put it to `../cookies.txt`. To make the task
 easier, use [cookies.txt Firefox
 add-on](https://addons.mozilla.org/fi/firefox/addon/cookies-txt).
 
-### Run
+## Run
 
 To get the puzzle text, input and log book template for day 3 of 2024, run:
 
