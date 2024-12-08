@@ -18,7 +18,7 @@ or on Debian:
 sudo apt install php-cli php-curl php-xml pandoc
 ```
 
-Steal AoC cookie and put it to `../cookies.txt`. To make the task
+Then, steal AoC cookie and put it to `../cookies.txt`. To make the task
 easier, use [cookies.txt Firefox
 add-on](https://addons.mozilla.org/fi/firefox/addon/cookies-txt).
 

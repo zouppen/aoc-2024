@@ -188,3 +188,27 @@ using just Show and Read, not fancy and optimized base 10 shifting.
 Run time 3.5 seconds on my laptop without threading.
 
 View my code: [Day07.hs](src/Day07.hs)
+
+## Day 8, Sunday
+
+Assignment: [Resonant Collinearity](https://adventofcode.com/2024/day/8)
+
+Waking up late, doing it easy. I was finished about 18:45 local time.
+
+I noticed wastl likes grids and it was just the day before yesterday
+when another grid task was on AoC. So I generalized the grid parser
+from Day 6 which took me maybe even an hour.
+
+Once again, I didn't read the part 2 assignment text properly and get
+a bit desperate and had an hour break after part 1. Then I just
+noticed that I can merge antenna locations with the "antinodes" list
+to get the correct output because `antinodesRepeat` does not add
+antenna positions to the set.
+
+Yesterday evening I made [new_day](tools/new_day) script which
+downloads the puzzle text and converts it to PDF and gets puzzle
+input. Today after finishing part 2 I added a feature which populates
+the links in this logbook as well. Now I just need a faster me coding
+so fast that I'll receive both stars in a minute.
+
+View my code: [Day08.hs](src/Day08.hs)
