@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 module Grid ( Grid(..)
+            , bounds
             , gridParser
             ) where
 
@@ -17,6 +18,10 @@ data Grid a = Grid { stuff  :: a
                    } deriving (Show, Generic)
 
 instance (A.ToJSON a) => A.ToJSON (Grid a)
+
+bounds :: Grid a -> (Int, Int) -> Bool
+bounds Grid{..} (x, y) = x >= 0 && x < cols &&
+                         y >= 0 && y < rows
 
 gridParser :: (Grid a -> Parser a) -> a -> Parser (Grid a)
 gridParser p emptyA = cells' $ Grid emptyA 0 0 0

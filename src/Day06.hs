@@ -94,16 +94,12 @@ movePatrol Grid{..} origP = if S.member (patrolY movedP, patrolX movedP) $ obst 
                             else movedP
   where movedP = patrolFwd origP
 
-isInside :: Grid a -> Patrol -> Bool
-isInside Grid{..} Patrol{..} = patrolY >= 0 && patrolY < rows &&
-                               patrolX >= 0 && patrolX < cols
-
 travel :: Grid Objects -> Patrol -> [Patrol]
 travel grid pat = if isIn
                   then next : travel grid next
                   else []
   where next = movePatrol grid pat
-        isIn = isInside grid next
+        isIn = bounds grid (patrolX next, patrolY next)
 
 toLocation :: Patrol -> (Int, Int)
 toLocation Patrol{..} = (patrolY, patrolX)
