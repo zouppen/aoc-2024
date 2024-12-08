@@ -1,10 +1,13 @@
-{-# LANGUAGE DeriveDataTypeable, RecordWildCards, BangPatterns #-}
+{-# LANGUAGE DeriveDataTypeable, RecordWildCards, OverloadedStrings #-}
 module Main where
 
-import Control.Monad (forM_, unless)
+import Control.Monad (forM, forM_)
+import qualified Data.Aeson as A
 import qualified Data.Map.Strict as M
+import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
 import Data.List (intercalate)
+import System.IO (stdout)
 import System.Console.CmdArgs.Implicit
 import Text.Printf
 
@@ -40,13 +43,22 @@ main = do
     (_, Just _) -> fail "You must specify a single day to run when \
                         \input file is specified"
     _ -> pure ()
+  let file day = case input of
+        Just x -> x
+        Nothing -> printf "inputs/%02d" day
+      dayList = intercalate ", " $ map show $ M.keys tontut
+      dayFail = fail $ "Not a valid day. Valid days: " <> dayList
   -- Start running
-  forM_ days $ \day -> do
-    unless json $ printf "-- Day %d ---\n" day
-    let !file = case input of
-          Just x -> x
-          Nothing -> printf "inputs/%02d" day
-    case M.lookup day tontut of
-      Just (Tonttu t) -> t json file part
-      Nothing         -> fail $ "Not a valid day. Valid days: " <> dayList
-        where dayList = intercalate ", " $ map show $ M.keys tontut
+  if json
+    then do values <- forM days $ \day -> case M.lookup day tontut of
+              Just Tonttu{..} -> jsonRunner (file day) part
+              Nothing         -> dayFail
+            printJSON $ M.fromList $ zip days values
+    else do forM_ days $ \day -> do
+              printf "-- Day %d ---\n" day
+              case M.lookup day tontut of
+                Just Tonttu{..} -> plainRunner (file day) part
+                Nothing         -> dayFail
+
+printJSON :: A.ToJSON a => a -> IO ()
+printJSON a = BL.hPut stdout $ A.encode a <> "\n"

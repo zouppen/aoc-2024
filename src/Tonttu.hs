@@ -4,7 +4,6 @@ module Tonttu (Tonttu(..), parseBinFile, t) where
 import Data.Foldable (traverse_)
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Key as A
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -14,7 +13,9 @@ import System.IO (IOMode(..), withFile, stdout, hFlush)
 
 import Day
 
-newtype Tonttu = Tonttu (Bool -> FilePath -> [T.Text] -> IO ())
+data Tonttu = Tonttu { plainRunner :: FilePath -> [T.Text] -> IO ()
+                     , jsonRunner  :: FilePath -> [T.Text] -> IO A.Value
+                     }
 
 parseBinFile :: Parser a -> FilePath -> IO a
 parseBinFile p f = withFile f ReadMode $ \h -> do
@@ -42,7 +43,7 @@ runPlain Day{..} file parts = do
         m = M.fromList solvers
         partList = T.intercalate ", " $ "input" : map fst solvers
 
-runJson :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO ()
+runJson :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO A.Value
 runJson Day{..} file parts = do
   input <- parseBinFile parser file
   case null parts of
@@ -57,12 +58,9 @@ runJson Day{..} file parts = do
           Just a  -> pure $ runner input (part, a)
         m = M.fromList solvers
         partList = T.intercalate ", " $ "input" : map fst solvers
-        jsonify :: A.ToJSON a => a -> IO ()
-        jsonify a = BL.hPut stdout $ A.encode a <> "\n"
-
-tonttu :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> Bool -> FilePath -> [T.Text] -> IO ()
-tonttu a True = runJson a
-tonttu a False = runPlain a
+        jsonify = pure . A.toJSON
 
 t :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => k -> Day a b -> M.Map k Tonttu
-t i task = M.singleton i $ Tonttu $ tonttu task
+t i task = M.singleton i $ Tonttu { plainRunner = runPlain task
+                                  , jsonRunner = runJson task
+                                  }
