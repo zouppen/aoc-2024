@@ -54,6 +54,11 @@ To make test run for parser for day 1, with JSON output:
 
 For full info, run `~/.cabal/bin/aoc-zouppen-2024 --help`.
 
+## Puzzle fetch util
+
+I have made PDF generator for the daily puzzle which also automates
+other things. See [tools](tools/).
+
 ## Tips and tricks
 
 During development, import module `Tonttu` which contains function
