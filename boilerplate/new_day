@@ -1,11 +1,34 @@
 #!/usr/bin/env php
 <?php
+
+$url_base = $argv[1];
+
+// Start by fetching the puzzle description
+$curl = curl_init();
+if ($curl === false) {
+    die("Curl initialization failed\n");
+}
+if (curl_setopt_array($curl, [
+    CURLOPT_COOKIEFILE => __DIR__.'/../cookies.txt',
+    CURLOPT_FAILONERROR => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_URL => $url_base,
+]) === false) {
+    die("Setting curl options failed\n");
+}
+
+// Load HTML
+$html = curl_exec($curl);
+if ($html === false) {
+    die("Unable to load puzzle description\n");
+}
+
 $whole_doc = new DOMDocument();
 $snippet = new DOMDocument();
-$whole_doc->loadHTMLFile('/tmp/Day 7 - Advent of Code 2024.html');
-//$whole_doc->loadHTMLFile('/tmp/Day 1 - Advent of Code 2023.html');
-//var_dump($whole_doc->getElementsByTagName('article'));
+$whole_doc->loadHTML($html);
 
+$day = 'mysteryday';
 $title = null;
 
 // This dangerous-looking while is needed because adoptNode() alters
@@ -29,8 +52,15 @@ while (true) {
                 $h1->textContent = $matches[1];
                 $h2->replaceWith($h1);
 
-                // Store the title
-                $title = $matches[1];
+                // Store the title, even more compact if possible
+                if (preg_match('/^Day ([0-9]*): *(.*)$/', $matches[1], $matches_title) !== 1) {
+                    // If regex doesn't match, as such
+                    $title = $matches[1];
+                } else {
+                    // If it work, the compacted title
+                    $day = $matches_title[1];
+                    $title = $matches_title[2];
+                }
             } else {
                 // Just mangle, not replace
                 $h2->textContent = $matches[1];
@@ -50,15 +80,38 @@ $fds = [
     2 => STDERR,
 ];
 
-$res = proc_open('pandoc -f html -o /tmp/kiva.pdf', $fds, $pipes);
+$day_padded = sprintf("%02s", $day);
+$pdf_file = __DIR__."/../puzzles/$day_padded.pdf";
+
+$res = proc_open('pandoc -f html -V geometry:margin=1cm -V papersize:a5 -o '.escapeshellarg($pdf_file), $fds, $pipes);
 if ($res === false) {
-    die('Unable to run pandoc');
+    die("Unable to run pandoc\n");
 }
 
 if (fwrite($pipes[0], $snippet->saveHTML()) === false) {
-    die('Pandoc did not consume input');
+    die("Pandoc did not consume input\n");
 }
-var_dump($title);
-proc_close($res);
-//$doc->loadHTML("<html><body>Test<br></body></html>");
-//echo
+if (proc_close($res) !== 0) {
+    die("Pandoc failed\n");
+}
+
+// Input fetching
+if (curl_setopt($curl, CURLOPT_URL, $url_base.'/input') === false) {
+    die("Setting curl options failed\n");
+}
+$input = curl_exec($curl);
+if ($input === false) {
+    die("Unable to load puzzle input\n");
+}
+$puzzle_input_file = __DIR__.'/../inputs/'.$day_padded;
+if (file_put_contents($puzzle_input_file, $input) === false) {
+    die("Unable to write puzzle input\n");
+}
+
+// Day name fiddle for the log
+$ts =  mktime(0, 0, 0, 12, $day, 2024);
+$dayname = date('D', $ts);
+
+print("Puzzle description written to $pdf_file\n");
+print("Puzzle input written to $puzzle_input_file\n");
+print("Logbook text:\n## Day $day, $dayname\n\nAssignment: [$title]($url_base)\n\nView my code: [Day$day_padded.hs](src/Day$day_padded.hs)\n");
