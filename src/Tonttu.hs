@@ -1,19 +1,28 @@
 {-# LANGUAGE RecordWildCards, OverloadedStrings #-}
-module Tonttu (Tonttu(..), parseBinFile, t) where
+module Tonttu ( Runner(..)
+              , Tonttu(..)
+              , parseBinFile
+              , t
+              ) where
 
-import Data.Foldable (traverse_)
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Key as A
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
-import qualified Data.Text.IO as T
 import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
 import qualified Data.ByteString as B
-import System.IO (IOMode(..), withFile, stdout, hFlush)
+import System.IO (IOMode(..), withFile)
+import Control.Monad.STM
+import Control.Concurrent.STM.TMVar
+import Control.Concurrent (forkIO)
 
 import Day
 
-data Tonttu = Tonttu { plainRunner :: FilePath -> [T.Text] -> IO ()
+data Runner a = Runner { infoText :: T.Text
+                       , result   :: STM a
+                       }
+
+data Tonttu = Tonttu { plainRunner :: FilePath -> [T.Text] -> IO [Runner String]
                      , jsonRunner  :: FilePath -> [T.Text] -> IO A.Value
                      }
 
@@ -22,21 +31,32 @@ parseBinFile p f = withFile f ReadMode $ \h -> do
   out <- parseWith (B.hGetSome h 0x4000) p mempty
   either fail pure $ eitherResult out
 
-runPlain :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO ()
+bgRun :: IO a -> IO (STM a)
+bgRun act = do
+  var <- newEmptyTMVarIO
+  _ <- forkIO $ do
+    x <- act
+    atomically $ putTMVar var x
+  pure $ readTMVar var
+
+runPlain :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO [Runner String]
 runPlain Day{..} file parts = do
-  input <- parseBinFile parser file
+  inputAct <- bgRun $ parseBinFile parser file
   case null parts of
-    True  -> traverse_ (runner input) solvers
-    False -> traverse_ (finder input) parts
-  where runner input (solverName, solver) = do
-          T.putStr $ "Running " <> solverName <> "... "
-          hFlush stdout
-          case solver of
-            ShowSolver f   -> print $ f input
-            StringSolver f -> putStrLn $ f input
-        finder input "input" = do
-          T.putStr "Parser output: "
-          print input
+    True  -> traverse (runner inputAct) solvers
+    False -> traverse (finder inputAct) parts
+  where runner inputAct (solverName, solver) = do
+          let infoText = "Running " <> solverName <> "... "
+          result <- bgRun $ do
+            input <- atomically inputAct
+            pure $ case solver of
+              ShowSolver f   -> show $ f input
+              StringSolver f -> f input
+          pure Runner{..}
+        finder inputAct "input" = do
+          let infoText = "Parser output: "
+          result <- bgRun $ show <$> atomically inputAct
+          pure Runner{..}
         finder input part = case M.lookup part m of
           Nothing -> fail $ T.unpack $ "Part name unknown. Should be one of: " <> partList
           Just a  -> runner input (part, a)

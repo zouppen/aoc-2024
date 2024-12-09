@@ -1,16 +1,19 @@
 {-# LANGUAGE DeriveDataTypeable, RecordWildCards, OverloadedStrings #-}
 module Main where
 
-import Control.Monad (forM, forM_)
+import Control.Concurrent.STM
+import Control.Monad (forM, forM_, zipWithM_)
 import qualified Data.Aeson as A
 import qualified Data.Map.Strict as M
 import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
+import qualified Data.Text.IO as T
 import Data.List (intercalate)
-import System.IO (stdout)
+import System.IO (hFlush, stdout)
 import System.Console.CmdArgs.Implicit
 import Text.Printf
 
+import Tonttu (Runner(..))
 import Tontut
 
 data Args = Args { days    :: [Int]
@@ -57,11 +60,20 @@ main = do
               Just Tonttu{..} -> jsonRunner (file day) part
               Nothing         -> dayFail
             printJSON $ M.fromList $ zip daysOrAll values
-    else do forM_ daysOrAll $ \day -> do
-              printf "--- Day %d ---\n" day
+    else do runners <- forM daysOrAll $ \day ->
               case M.lookup day tontut of
                 Just Tonttu{..} -> plainRunner (file day) part
                 Nothing         -> dayFail
+            -- Fetch results from runners
+            let act day dayRunners = do
+                  printf "--- Day %d ---\n" day
+                  forM_ dayRunners $ \Runner{..} -> do
+                    T.hPutStr stdout infoText
+                    hFlush stdout
+                    str <- atomically $ result
+                    putStrLn str
+                  pure ()
+              in zipWithM_ act daysOrAll runners
 
 printJSON :: A.ToJSON a => a -> IO ()
 printJSON a = BL.hPut stdout $ A.encode a <> "\n"
