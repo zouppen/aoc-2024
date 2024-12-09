@@ -227,8 +227,8 @@ Assignment: [Disk Fragmenter](https://adventofcode.com/2024/day/9)
 It wasn't a grid puzzle day, maybe once again tomorrow. I made a more
 complex parser than needed which parsed files instead of just parsing
 the digits. It would've been faster in both computationally and in
-coding timo to parse the digits first and then fold the list. But I
-picked my poison and it tasted bitter.
+coding time to parse the digits first and then fold the list. But I
+picked my poison and the taste was bitter.
 
 Anyway, having a `File` type was useful in part 2 when the files were
 ordered in contiguous fashion.
@@ -245,6 +245,6 @@ efficient or stop doing this. I'll decide after tomorrow if I have to
 stop to not to ruin my life.
 
 Anyway, there's a cool projection sort trick in function
-`idAndPositionSort`. You should check it!
+`idAndPositionSort`. You should check it out!
 
 View my code: [Day09.hs](src/Day09.hs)
