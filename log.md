@@ -219,3 +219,32 @@ the links in this logbook as well. Now I just need a faster me coding
 so fast that I'll receive both stars in a minute.
 
 View my code: [Day08.hs](src/Day08.hs)
+
+## Day 9, Monday
+
+Assignment: [Disk Fragmenter](https://adventofcode.com/2024/day/9)
+
+It wasn't a grid puzzle day, maybe once again tomorrow. I made a more
+complex parser than needed which parsed files instead of just parsing
+the digits. It would've been faster in both computationally and in
+coding timo to parse the digits first and then fold the list. But I
+picked my poison and it tasted bitter.
+
+Anyway, having a `File` type was useful in part 2 when the files were
+ordered in contiguous fashion.
+
+Once again, for the 3rd time or so, I didn't read the assignment
+well. Wastl has a C coder mindset and probably had decided not to
+allow overlapping moves in the assignment to make the puzzle
+simpler. That was a bit ambiguous, it was in examples but not in the
+text. Anyway, in my solution overlapped moves were easier to do and I
+assumed it and lost over an hour in debugging this very trivial case.
+
+I'm using too much time on these puzzles. I have two options: To be more
+efficient or stop doing this. I'll decide after tomorrow if I have to
+stop to not to ruin my life.
+
+Anyway, there's a cool projection sort trick in function
+`idAndPositionSort`. You should check it!
+
+View my code: [Day09.hs](src/Day09.hs)
