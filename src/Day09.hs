@@ -7,7 +7,6 @@ import Data.Attoparsec.ByteString.Char8
 import Data.List (sortOn)
 import qualified Data.IntMap as IM
 import GHC.Generics
-import Text.Printf
 
 import Day
 
@@ -85,6 +84,7 @@ fileToDisk File{..} = IM.fromList [ (filePos + i, fileId)
 toDisk :: [File] -> IM.IntMap Int
 toDisk = mconcat . map fileToDisk
 
+-- |Runs the Part 1 algorithm.
 defrag :: IM.Key -> IM.IntMap Int -> IM.IntMap Int
 defrag i m = case IM.maxViewWithKey m of
   Just ((lastI, lastVal), newMap) ->
@@ -95,41 +95,38 @@ defrag i m = case IM.maxViewWithKey m of
          else defrag (i+1) $ IM.insert i lastVal newMap -- Swap
   Nothing -> error "Defrag failed. Run chkdsk first!"
 
+-- |Runs the Part 2 algorithm. Assumption: highest fileId is first!
 pickAndPlaces :: [File] -> [File]
 pickAndPlaces fs = loop (peekHigh fs) fs
   where loop (-1) = id
         loop i = loop (i-1) . pickAndPlace i
+        peekHigh (File{..}:_) = fileId
+        peekHigh _ = error "Empty file list"
 
 pickAndPlace :: Int -> [File] -> [File]
-pickAndPlace i xs = tail $ place stopAt file (pole:remList)
+pickAndPlace i xs = place stopAt file 0 remList
   where
-    pole = File (-1) 0 0 -- Makes start condition to work, removed with `tail`.
     (file, remList) = case idAndPositionSort i xs of
       Just a -> a
-      Nothing -> error $ printf "Given id %d not found" i
+      Nothing -> error $ "id not found: " <> show i
     -- In the puzzle there's no in-place move. If you want to enable
     -- it, set stopAt = filePos file
     stopAt = filePos file - fileSize file
 
-place :: Int -> File -> [File] -> [File]
-place stopAt x (a:rest@(b:_)) =
-  -- Placing in a gap, if any
-  let aEnd = filePos a + fileSize a
-  in if stopAt < aEnd
-     then a : x : rest                      -- Drop it wherever
-     else if aEnd + fileSize x <= filePos b
-          then a : x{filePos = aEnd} : rest -- Drop it after previous
-          else a : place stopAt x rest      -- Continue
-place stopAt x [a] =
-  let aEnd = filePos a + fileSize a
-      newX = if stopAt < aEnd
-             then x                         -- Drop it wherever
-             else x{filePos = aEnd}         -- Drop it after previous
-  in [a, newX]
-place _ _ [] = error "Undefined corner case"
+place :: Int -> File -> Int -> [File] -> [File]
+place stopAt x leftBound rest =
+  let dropXLeft = x{filePos = leftBound} : rest
+      rightSide File{..} = filePos + fileSize
+  in if stopAt < leftBound
+     then x : rest  -- We're too right
+     else case rest of
+            (b:bs) -> if leftBound + fileSize x <= filePos b
+                      then dropXLeft
+                      else b : place stopAt x (rightSide b) bs -- Keep going
+            [] -> dropXLeft
 
 -- |Sorting so that we get the specific file id and list sorted by
--- file position on single run.
+-- file position in a single run.
 idAndPositionSort :: Int -> [File] -> Maybe (File, [File])
 idAndPositionSort i xs =
   let notFileId File{..} = fileId /= i
@@ -142,7 +139,3 @@ idAndPositionSort i xs =
                    then Just (a, [])
                    else Nothing
        []       -> Nothing
-
-peekHigh :: [File] -> Int
-peekHigh (File{..}:_) = fileId
-peekHigh _ = error "Empty file list"
