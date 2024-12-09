@@ -5,16 +5,16 @@ module Tonttu ( Runner(..)
               , t
               ) where
 
+import Control.Concurrent.STM.TMVar
+import Control.Concurrent (forkIO)
+import Control.DeepSeq (NFData(..), deepseq)
 import qualified Data.Aeson as A
-import qualified Data.Aeson.Key as A
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
 import qualified Data.ByteString as B
 import System.IO (IOMode(..), withFile)
 import Control.Monad.STM
-import Control.Concurrent.STM.TMVar
-import Control.Concurrent (forkIO)
 
 import Day
 
@@ -23,7 +23,7 @@ data Runner a = Runner { infoText :: T.Text
                        }
 
 data Tonttu = Tonttu { plainRunner :: FilePath -> [T.Text] -> IO [Runner String]
-                     , jsonRunner  :: FilePath -> [T.Text] -> IO A.Value
+                     , jsonRunner  :: FilePath -> [T.Text] -> IO [Runner A.Value]
                      }
 
 parseBinFile :: Parser a -> FilePath -> IO a
@@ -39,15 +39,23 @@ bgRun act = do
     atomically $ putTMVar var x
   pure $ readTMVar var
 
+bgRunDeep :: NFData a => IO a -> IO (STM a)
+bgRunDeep act = do
+  var <- newEmptyTMVarIO
+  _ <- forkIO $ do
+    x <- act
+    x `deepseq` (atomically $ putTMVar var x)
+  pure $ readTMVar var
+
 runPlain :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO [Runner String]
-runPlain Day{..} file parts = do
-  inputAct <- bgRun $ parseBinFile parser file
+runPlain day@Day{..} file parts = do
+  inputAct <- bgParse file
   case null parts of
     True  -> traverse (runner inputAct) solvers
     False -> traverse (finder inputAct) parts
   where runner inputAct (solverName, solver) = do
           let infoText = "Running " <> solverName <> "... "
-          result <- bgRun $ do
+          result <- bgRunDeep $ do
             input <- atomically inputAct
             pure $ case solver of
               ShowSolver f   -> show $ f input
@@ -57,28 +65,43 @@ runPlain Day{..} file parts = do
           let infoText = "Parser output: "
           result <- bgRun $ show <$> atomically inputAct
           pure Runner{..}
-        finder input part = case M.lookup part m of
-          Nothing -> fail $ T.unpack $ "Part name unknown. Should be one of: " <> partList
-          Just a  -> runner input (part, a)
-        m = M.fromList solvers
-        partList = T.intercalate ", " $ "input" : map fst solvers
+        finder inputAct part = withPart part $ runner inputAct
+        CommonVars{..} = commonVars day
 
-runJson :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO A.Value
-runJson Day{..} file parts = do
-  input <- parseBinFile parser file
+runJson :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => Day a b -> FilePath -> [T.Text] -> IO [Runner A.Value]
+runJson day@Day{..} file parts = do
+  inputAct <- bgParse file
   case null parts of
-    True  -> jsonify $ A.object $ "input" A..= input : map (runner input) solvers
-    False -> traverse (finder input) parts >>= jsonify . A.object
-  where runner input (solverName, solver) = case solver of
-          ShowSolver f    -> A.fromText solverName A..= f input
-          StringSolver f  -> A.fromText solverName A..= f input
-        finder input "input" = pure $ "input" A..= input
-        finder input part = case M.lookup part m of
+    True  -> traverse (runner inputAct) solvers
+    False -> traverse (finder inputAct) parts
+  where runner inputAct (solverName, solver) = do
+          result <- bgRunDeep $ do
+            input <- atomically inputAct
+            pure $ case solver of
+              ShowSolver f    -> A.toJSON $ f input
+              StringSolver f  -> A.toJSON $ f input
+          pure Runner{infoText = solverName, ..}
+        finder inputAct "input" = do
+          result <- bgRun $ A.toJSON <$> atomically inputAct
+          pure Runner{infoText = "input", ..}
+        finder inputAct part = withPart part $ runner inputAct
+        CommonVars{..} = commonVars day
+
+data CommonVars a b c = CommonVars
+  { withPart :: T.Text
+             -> ((T.Text, Solver a b) -> IO (Runner c))
+             -> IO (Runner c)
+  , bgParse :: FilePath -> IO (STM a)
+  }
+
+commonVars :: Day a b -> CommonVars a b c
+commonVars Day{..} = CommonVars{..}
+  where partList     = T.intercalate ", " $ "input" : map fst solvers
+        withPart part act = case M.lookup part m of
           Nothing -> fail $ T.unpack $ "Part name unknown. Should be one of: " <> partList
-          Just a  -> pure $ runner input (part, a)
-        m = M.fromList solvers
-        partList = T.intercalate ", " $ "input" : map fst solvers
-        jsonify = pure . A.toJSON
+          Just a  -> act (part, a)
+        m            = M.fromList solvers
+        bgParse file = bgRun $ parseBinFile parser file
 
 t :: (A.ToJSON a, A.ToJSON b, Show a, Show b) => k -> Day a b -> M.Map k Tonttu
 t i task = M.singleton i $ Tonttu { plainRunner = runPlain task

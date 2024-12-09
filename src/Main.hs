@@ -2,14 +2,15 @@
 module Main where
 
 import Control.Concurrent.STM
-import Control.Monad (forM, forM_, zipWithM_)
+import Control.Monad (forM, forM_, zipWithM, zipWithM_)
 import qualified Data.Aeson as A
+import qualified Data.Aeson.Key as A
 import qualified Data.Map.Strict as M
 import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
 import qualified Data.Text.IO as T
 import Data.List (intercalate)
-import System.IO (hFlush, stdout)
+import System.IO (hFlush, hPutStrLn, stdout, stderr)
 import System.Console.CmdArgs.Implicit
 import Text.Printf
 
@@ -56,24 +57,31 @@ main = do
       dayFail = fail $ "Not a valid day. Valid days: " <> dayList
   -- Start running
   if json
-    then do values <- forM daysOrAll $ \day -> case M.lookup day tontut of
+    then do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
               Just Tonttu{..} -> jsonRunner (file day) part
               Nothing         -> dayFail
-            printJSON $ M.fromList $ zip daysOrAll values
-    else do runners <- forM daysOrAll $ \day ->
-              case M.lookup day tontut of
-                Just Tonttu{..} -> plainRunner (file day) part
-                Nothing         -> dayFail
-            -- Fetch results from runners
+            o <- let act day dayRunners = do
+                       hPrintf stderr "Calculating day %d..." day
+                       pairs <- forM dayRunners $ \Runner{..} -> do
+                         hPrintf stderr " %s" infoText
+                         val <- atomically result
+                         pure $ A.fromText infoText A..= val
+                       hPutStrLn stderr ""
+                       pure $ A.fromString (show day) A..= A.object pairs
+                 in zipWithM act daysOrAll allRunners
+            printJSON $ A.object o
+    else do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
+              Just Tonttu{..} -> plainRunner (file day) part
+              Nothing         -> dayFail
             let act day dayRunners = do
                   printf "--- Day %d ---\n" day
                   forM_ dayRunners $ \Runner{..} -> do
                     T.hPutStr stdout infoText
                     hFlush stdout
-                    str <- atomically $ result
+                    str <- atomically result
                     putStrLn str
                   pure ()
-              in zipWithM_ act daysOrAll runners
+              in zipWithM_ act daysOrAll allRunners
 
 printJSON :: A.ToJSON a => a -> IO ()
 printJSON a = BL.hPut stdout $ A.encode a <> "\n"
