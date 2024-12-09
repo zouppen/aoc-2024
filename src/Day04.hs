@@ -2,10 +2,9 @@
 module Day04 where
 
 import qualified Data.Aeson as A
-import Data.Attoparsec.ByteString
+import Data.Attoparsec.ByteString hiding (take)
 import qualified Data.ByteString.Char8 as B
 import Data.Word (Word8)
-import Data.List.Utils (startswith)
 import GHC.Generics
 
 import Day
@@ -88,7 +87,7 @@ joulupuuro stuff = [ streak stuff dir i
                    ]
 
 manteli :: String -> Bool
-manteli = startswith "XMAS"
+manteli s = "XMAS" == take 4 s
 
 ahkiot :: [String]
 ahkiot = [ "M S\
