@@ -248,3 +248,33 @@ Anyway, there's a cool projection sort trick in function
 `idAndPositionSort`. You should check it out!
 
 View my code: [Day09.hs](src/Day09.hs)
+
+## Day 10, Tuesday
+
+Assignment: [Hoof It](https://adventofcode.com/2024/day/10)
+
+Grid puzzle! How predictive.
+
+Was straightforward to do. Parsing the grid and the trailheads to
+separate items, Map and a list. Could be done with plain iterating the
+data list until `0` is found like C programmers would do. But I have
+my values and they're not null.
+
+Once again the procedural bias of AoC author was visible. Part 2 was
+shorter simpler in Haskell than Part 1 because I needed to filter
+duplicate results (which was super simple, too). But in case anyone
+thinks coding AoC functionally is harder, it may have something to do
+with the puzzles. Real world problems are often more functional
+programming friendly than human-invented coding challenges.
+
+My code is not super interesting this time but maybe it's readable. I
+didn't even put Finnish in the variable for the lulz names this time.
+
+PS. Yesterday evening after finishing the previous puzzle I added
+parallel evaluation for the command-line tool which runs the
+puzzles. Just to practice with
+[deepseq](https://hackage.haskell.org/package/deepseq-1.5.1.0/docs/Control-DeepSeq.html).
+Parallel computing is rather horrible with Haskell. It just has so
+many must-know things before it works as expected.
+
+View my code: [Day10.hs](src/Day10.hs)
