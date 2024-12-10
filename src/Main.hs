@@ -53,12 +53,12 @@ main = do
         [] -> M.keys tontut
         a  -> a
       dayList = intercalate ", " $ map show $ M.keys tontut
-      dayFail = fail $ "Not a valid day. Valid days: " <> dayList
+      run proj = forM daysOrAll $ \day -> case M.lookup day tontut of
+        Just tonttu -> (day,) <$> (proj tonttu) (file day) part
+        Nothing     -> fail $ "Not a valid day. Valid days: " <> dayList
   -- Start running
   if json
-    then do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
-              Just Tonttu{..} -> (day,) <$> jsonRunner (file day) part
-              Nothing         -> dayFail
+    then do allRunners <- run jsonRunner
             -- Now it's running in the background. Let's fetch results
             dayPairs <- forM allRunners $ \(day, dayRunners) -> do
               hPrintf stderr "Calculating day %d..." day
@@ -69,9 +69,7 @@ main = do
               hPutStrLn stderr ""
               pure $ A.fromString (show day) A..= A.object partPairs
             printJSON $ A.object dayPairs
-    else do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
-              Just Tonttu{..} -> (day,) <$> plainRunner (file day) part
-              Nothing         -> dayFail
+    else do allRunners <- run plainRunner
             -- Now it's running in the background. Let's fetch results
             forM_ allRunners $ \(day, dayRunners) -> do
               printf "--- Day %d ---\n" day
