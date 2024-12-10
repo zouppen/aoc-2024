@@ -7,6 +7,7 @@ module Tonttu ( Runner(..)
 
 import Control.Concurrent (forkIO)
 import Control.Concurrent.STM.TVar
+import Control.Exception (SomeException, try, throw)
 import Control.DeepSeq (NFData, deepseq)
 import Control.Monad.STM (STM, atomically, retry)
 import Data.Aeson (Value, ToJSON, toJSON)
@@ -38,8 +39,10 @@ bgRun :: IO a -> IO (STM a)
 bgRun act = do
   var <- newTVarIO Nothing
   _ <- forkIO $ do
-    x <- act
-    atomically $ writeTVar var (Just x)
+    x <- try act
+    atomically $ writeTVar var $ case x of
+      Left e  -> throw (e :: SomeException) -- "Explodes" in receiver end
+      Right a -> Just a
   pure $ readTVar var >>= maybe retry pure
 
 -- |Type which carries some useful functions and variables from the
@@ -62,9 +65,8 @@ runnerWrap act day@Day{..} file parts = do
           Just a  -> pure (part, a)
       toRunner infoText calc = do
         resultAct <- bgRun $ do
-          -- Do the operation
           result <- calc
-          -- Force evaluation and get time
+          -- First force result evaluation and then get time
           now <- result `deepseq` getTime MonotonicCoarse
           pure (now, result)
         pure Runner{..}
