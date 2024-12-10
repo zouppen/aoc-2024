@@ -21,14 +21,14 @@ See my notes of daily tasks on the [logbook page](log.md)
 ### Fedora
 
 ```sh
-sudo dnf install ghc-aeson-devel ghc-attoparsec-devel ghc-cmdargs-devel
+sudo dnf install ghc-aeson-devel ghc-attoparsec-devel ghc-cmdargs-devel ghc-clock-devel
 cabal install --overwrite-policy=always
 ```
 
 ### Debian and Ubuntu
 
 ```sh
-sudo apt install libghc-aeson-dev libghc-attoparsec-dev libghc-cmdargs-dev
+sudo apt install libghc-aeson-dev libghc-attoparsec-dev libghc-cmdargs-dev libghc-clock-dev
 cabal install --overwrite-policy=always
 ```
 

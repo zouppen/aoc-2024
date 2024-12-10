@@ -8,7 +8,6 @@ import qualified Data.Aeson.Key as A
 import qualified Data.Map.Strict as M
 import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
-import qualified Data.Text.IO as T
 import Data.List (intercalate)
 import System.IO (hFlush, hPutStrLn, stdout, stderr)
 import System.Console.CmdArgs.Implicit
@@ -64,7 +63,7 @@ main = do
                        hPrintf stderr "Calculating day %d..." day
                        pairs <- forM dayRunners $ \Runner{..} -> do
                          hPrintf stderr " %s" infoText
-                         val <- atomically result
+                         (endTime, val) <- atomically resultAct
                          pure $ A.fromText infoText A..= val
                        hPutStrLn stderr ""
                        pure $ A.fromString (show day) A..= A.object pairs
@@ -76,9 +75,9 @@ main = do
             let act day dayRunners = do
                   printf "--- Day %d ---\n" day
                   forM_ dayRunners $ \Runner{..} -> do
-                    T.hPutStr stdout infoText
+                    printf "Running %s... " infoText
                     hFlush stdout
-                    str <- atomically result
+                    (endTime, str) <- atomically resultAct
                     putStrLn str
                   pure ()
               in zipWithM_ act daysOrAll allRunners
