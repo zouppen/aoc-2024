@@ -1,8 +1,8 @@
-{-# LANGUAGE DeriveDataTypeable, RecordWildCards, OverloadedStrings #-}
+{-# LANGUAGE DeriveDataTypeable, OverloadedStrings, RecordWildCards, TupleSections #-}
 module Main where
 
 import Control.Concurrent.STM
-import Control.Monad (forM, forM_, zipWithM, zipWithM_)
+import Control.Monad (forM, forM_)
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Key as A
 import qualified Data.Map.Strict as M
@@ -57,30 +57,29 @@ main = do
   -- Start running
   if json
     then do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
-              Just Tonttu{..} -> jsonRunner (file day) part
+              Just Tonttu{..} -> (day,) <$> jsonRunner (file day) part
               Nothing         -> dayFail
-            o <- let act day dayRunners = do
-                       hPrintf stderr "Calculating day %d..." day
-                       pairs <- forM dayRunners $ \Runner{..} -> do
-                         hPrintf stderr " %s" infoText
-                         (endTime, val) <- atomically resultAct
-                         pure $ A.fromText infoText A..= val
-                       hPutStrLn stderr ""
-                       pure $ A.fromString (show day) A..= A.object pairs
-                 in zipWithM act daysOrAll allRunners
-            printJSON $ A.object o
+            -- Now it's running in the background. Let's fetch results
+            dayPairs <- forM allRunners $ \(day, dayRunners) -> do
+              hPrintf stderr "Calculating day %d..." day
+              partPairs <- forM dayRunners $ \Runner{..} -> do
+                hPrintf stderr " %s" infoText
+                (endTime, val) <- atomically resultAct
+                pure $ A.fromText infoText A..= val
+              hPutStrLn stderr ""
+              pure $ A.fromString (show day) A..= A.object partPairs
+            printJSON $ A.object dayPairs
     else do allRunners <- forM daysOrAll $ \day -> case M.lookup day tontut of
-              Just Tonttu{..} -> plainRunner (file day) part
+              Just Tonttu{..} -> (day,) <$> plainRunner (file day) part
               Nothing         -> dayFail
-            let act day dayRunners = do
-                  printf "--- Day %d ---\n" day
-                  forM_ dayRunners $ \Runner{..} -> do
-                    printf "Running %s... " infoText
-                    hFlush stdout
-                    (endTime, str) <- atomically resultAct
-                    putStrLn str
-                  pure ()
-              in zipWithM_ act daysOrAll allRunners
+            -- Now it's running in the background. Let's fetch results
+            forM_ allRunners $ \(day, dayRunners) -> do
+              printf "--- Day %d ---\n" day
+              forM_ dayRunners $ \Runner{..} -> do
+                printf "Running %s... " infoText
+                hFlush stdout
+                (endTime, str) <- atomically resultAct
+                putStrLn str
 
 printJSON :: A.ToJSON a => a -> IO ()
 printJSON a = BL.hPut stdout $ A.encode a <> "\n"
