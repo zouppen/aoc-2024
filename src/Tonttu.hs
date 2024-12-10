@@ -5,17 +5,17 @@ module Tonttu ( Runner(..)
               , t
               ) where
 
-import Control.Concurrent.STM.TMVar
 import Control.Concurrent (forkIO)
-import Control.DeepSeq (NFData(..), deepseq)
-import Control.Monad.STM
+import Control.Concurrent.STM.TVar
+import Control.DeepSeq (NFData, deepseq)
+import Control.Monad.STM (STM, atomically, retry)
 import Data.Aeson (Value, ToJSON, toJSON)
+import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
+import qualified Data.ByteString as B
 import qualified Data.Map.Strict as M
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
-import qualified Data.ByteString as B
-import System.Clock
+import System.Clock (TimeSpec, Clock(MonotonicCoarse), getTime)
 import System.IO (IOMode(..), withFile)
 
 import Day
@@ -36,11 +36,11 @@ parseBinFile p f = withFile f ReadMode $ \h -> do
 
 bgRun :: IO a -> IO (STM a)
 bgRun act = do
-  var <- newEmptyTMVarIO
+  var <- newTVarIO Nothing
   _ <- forkIO $ do
     x <- act
-    atomically $ putTMVar var x
-  pure $ readTMVar var
+    atomically $ writeTVar var (Just x)
+  pure $ readTVar var >>= maybe retry pure
 
 -- |Type which carries some useful functions and variables from the
 -- more generic runnerWrap to runPlain and runJson. Type variable
