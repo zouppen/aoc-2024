@@ -305,7 +305,7 @@ as a key and count as a value, and the value is initially 1 for each
 input element. Iterate it 75 times and there's your part 2.
 
 Run time < 50 ms, non-threaded. I have polished my code after puzzle
-comletion and it's very nice and readable. Go and check it!
+completion and it's very nice and readable. Go and check it!
 
 Tomorrow it's an even day so maybe there will be grids again. I know
 you well, Mr. Wastl.
