@@ -41,11 +41,12 @@ blink x | x == 0      = [1]
         | even digits = [upper, lower]
         | otherwise   = [2024*x]
   where digits = ceilLog10 x
-        (upper, lower) = quotRem x (10 ^ (digits .>>. 1))
+        (upper, lower) = quotRem x (10^(digits .>>. 1))
 
 -- |10-base logarithm rounded up, i.e. digit count.
 ceilLog10 :: Int -> Int
 ceilLog10 x | x < 1     = error "Operand not positive"
             | otherwise = f 10 1 x
-  where f n logN a = if a < n then logN
+  where f n logN a = if a < n
+                     then logN
                      else f (10*n) (logN+1) a
