@@ -14,7 +14,7 @@ import System.Console.CmdArgs.Implicit
 import System.IO (hFlush, hPutStrLn, stdout, stderr)
 import Text.Printf
 
-import Tonttu (Runner(..))
+import Tonttu (Runner(..), Tonttu(..), niputa)
 import Tontut
 
 data Args = Args { days    :: [Int]
@@ -38,6 +38,9 @@ argsDef = Args{ days = def &= typ "DAY" &= args
           &= program "aoc-zouppen-2024"
           &= summary "Advent of Code solutions by Zouppen"
 
+tontusto :: M.Map Int Tonttu
+tontusto = niputa tontut
+
 main :: IO ()
 main = do
   Args{..} <- cmdArgs argsDef
@@ -51,10 +54,10 @@ main = do
         Just x -> x
         Nothing -> printf "inputs/%02d" day
       daysOrAll = case days of
-        [] -> M.keys tontut
+        [] -> M.keys tontusto
         a  -> a
-      dayList = intercalate ", " $ map show $ M.keys tontut
-      run proj = forM daysOrAll $ \day -> case M.lookup day tontut of
+      dayList = intercalate ", " $ map show $ M.keys tontusto
+      run proj = forM daysOrAll $ \day -> case M.lookup day tontusto of
         Just tonttu -> (day,) <$> (proj tonttu) (file day) part
         Nothing     -> fail $ "Not a valid day. Valid days: " <> dayList
   -- Start running

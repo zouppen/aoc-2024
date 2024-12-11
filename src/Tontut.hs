@@ -1,4 +1,4 @@
-module Tontut (Tonttu(..), tontut) where
+module Tontut (tontut) where
 
 import Tonttu
 import qualified Day01
@@ -11,17 +11,16 @@ import qualified Day07
 import qualified Day08
 import qualified Day09
 import qualified Day10
-import Data.Map.Strict (Map)
 
-tontut :: Map Int Tonttu
-tontut = t 1 Day01.task <>
-         t 2 Day02.task <>
-         t 3 Day03.task <>
-         t 4 Day04.task <>
-         t 5 Day05.task <>
-         t 6 Day06.task <>
-         t 7 Day07.task <>
-         t 8 Day08.task <>
-         t 9 Day09.task <>
-         t 10 Day10.task <>
-         mempty
+tontut :: [Maybe Tonttu]
+tontut = [ t Day01.task
+         , t Day02.task
+         , t Day03.task
+         , t Day04.task
+         , t Day05.task
+         , t Day06.task
+         , t Day07.task
+         , t Day08.task
+         , t Day09.task
+         , t Day10.task
+         ]

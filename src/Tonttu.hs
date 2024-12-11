@@ -2,6 +2,7 @@
 module Tonttu ( Runner(..)
               , Tonttu(..)
               , parseBinFile
+              , niputa
               , t
               ) where
 
@@ -102,7 +103,15 @@ runJson Day{..} CommonVars{..} parts = do
           toRunner "parser" $ toJSON <$> atomically inputAct
         finder part = lookupPart part >>= runner
 
-t :: (ToJSON a, ToJSON b, Show a, Show b) => k -> Day a b -> M.Map k Tonttu
-t i task = M.singleton i $ Tonttu { plainRunner = runnerWrap runPlain task
-                                  , jsonRunner = runnerWrap runJson task
-                                  }
+t :: (ToJSON a, ToJSON b, Show a, Show b) => Day a b -> Maybe Tonttu
+t task = Just $ Tonttu { plainRunner = runnerWrap runPlain task
+                       , jsonRunner = runnerWrap runJson task
+                       }
+
+niputa :: [Maybe Tonttu] -> M.Map Int Tonttu
+niputa = M.fromList . tonttuile 1
+
+tonttuile :: Enum a => a -> [Maybe b] -> [(a, b)]
+tonttuile i (Nothing:xs) = tonttuile (succ i) xs
+tonttuile i (Just x:xs) = (i,x) : tonttuile (succ i) xs
+tonttuile _ [] = []
