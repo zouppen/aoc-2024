@@ -9,8 +9,9 @@ import qualified Data.Map.Strict as M
 import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
 import Data.List (intercalate)
-import System.IO (hFlush, hPutStrLn, stdout, stderr)
+import System.Clock
 import System.Console.CmdArgs.Implicit
+import System.IO (hFlush, hPutStrLn, stdout, stderr)
 import Text.Printf
 
 import Tonttu (Runner(..))
@@ -65,9 +66,12 @@ main = do
               partPairs <- forM dayRunners $ \Runner{..} -> do
                 hPrintf stderr " %s" infoText
                 (endTime, val) <- atomically resultAct
-                pure $ A.fromText infoText A..= val
+                pure $ let resObj = [ "result" A..= val
+                                    , "time"   A..= diffSec endTime startTime
+                                    ]
+                       in A.fromText infoText A..= A.object resObj
               hPutStrLn stderr ""
-              pure $ A.fromString (show day) A..= A.object partPairs
+              pure $ A.fromString (printf "%02d" day) A..= A.object partPairs
             printJSON $ A.object dayPairs
     else do allRunners <- run plainRunner
             -- Now it's running in the background. Let's fetch results
@@ -77,7 +81,13 @@ main = do
                 printf "Running %s... " infoText
                 hFlush stdout
                 (endTime, str) <- atomically resultAct
-                putStrLn str
+                printf "%-15s % 7.3f s\n" str (diffSec endTime startTime)
+
+intervalToFrac :: TimeSpec -> Double
+intervalToFrac a = 1e-9 * (fromIntegral $ toNanoSecs a)
+
+diffSec :: TimeSpec -> TimeSpec -> Double
+diffSec a b = intervalToFrac $ diffTimeSpec a b
 
 printJSON :: A.ToJSON a => a -> IO ()
 printJSON a = BL.hPut stdout $ A.encode a <> "\n"
