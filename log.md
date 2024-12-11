@@ -284,7 +284,7 @@ View my code: [Day10.hs](src/Day10.hs)
 Assignment: [Plutonian Pebbles](https://adventofcode.com/2024/day/11)
 
 Part 1 was super simple with brute force. Just a list comprehension
-and one ugly integer to string and back to int trick.
+and one ugly integer to string and back to integer trick.
 
 Quickly noticed that part 2 is intentionally taking forever with brute
 force, so needed to get back to drawing desk. Some similarities with
@@ -305,7 +305,8 @@ as a key and count as a value, and the value is initially 1 for each
 input element. Iterate it 75 times and there's your part 2.
 
 Run time < 50 ms, non-threaded. I have polished my code after puzzle
-completion and it's very nice and readable. Go and check it!
+completion and it's very nice and readable. No more string
+conversions! Go and check it!
 
 Tomorrow it's an even day so maybe there will be grids again. I know
 you well, Mr. Wastl.
