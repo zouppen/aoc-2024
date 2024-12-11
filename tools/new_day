@@ -83,7 +83,7 @@ $fds = [
 $day_padded = sprintf("%02s", $day);
 $pdf_file = __DIR__."/../puzzles/$day_padded.pdf";
 
-$res = proc_open('pandoc -f html -V geometry:margin=1cm -V papersize:a5 -o '.escapeshellarg($pdf_file), $fds, $pipes);
+$res = proc_open('pandoc -f html -V geometry:margin=1.5cm -V documentclass:report -V papersize:a5 -o '.escapeshellarg($pdf_file), $fds, $pipes);
 if ($res === false) {
     die("Unable to run pandoc\n");
 }
