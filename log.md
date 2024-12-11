@@ -278,3 +278,36 @@ Parallel computing is rather horrible with Haskell. It just has so
 many must-know things before it works as expected.
 
 View my code: [Day10.hs](src/Day10.hs)
+
+## Day 11, Wednesday
+
+Assignment: [Plutonian Pebbles](https://adventofcode.com/2024/day/11)
+
+Part 1 was super simple with brute force. Just a list comprehension
+and one ugly integer to string and back to int trick.
+
+Quickly noticed that part 2 is intentionally taking forever with brute
+force, so needed to get back to drawing desk. Some similarities with
+Day 6 part 2 where a loop had to be detected and one has to move away
+and not to stick to initial data structures.
+
+At first I planned to make a "generation cache" where a number of
+iterations produce a cache for each input value. That way you could've
+brute-forced the sum of, let's say 10 generations for the most common
+values such as 0 and 1, and pre-fill those values. I dropped the plan
+after 15 min pen and paper testing lead me to the outcome that another
+take, grouping, is possibly faster and most importantly, simpler.
+
+The key to the solution was to discover that the order of the "stones"
+in the run is not relevant, so grouping same numbers and counting them
+only once is way more effective. In my solution it's a map with number
+as a key and count as a value, and the value is initially 1 for each
+input element. Iterate it 75 times and there's your part 2.
+
+Run time < 50 ms, non-threaded. I have polished my code after puzzle
+comletion and it's very nice and readable. Go and check it!
+
+Tomorrow it's an even day so maybe there will be grids again. I know
+you well, Mr. Wastl.
+
+View my code: [Day11.hs](src/Day11.hs)

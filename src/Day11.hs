@@ -1,18 +1,20 @@
-{-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 {-# LANGUAGE TupleSections #-}
 module Day11 where
 
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.IntMap as IM
+import Data.Bits ((.>>.))
 
 import Day
 
 task :: Day [Int] Int
 task = Day { parser  = parseAll
-           , solvers = [ part1 $ iterateBlinkTo 25
-                       , part2 $ iterateBlinkTo 75
+           , solvers = [ part1 $ blinkGeneration 25
+                       , part2 $ blinkGeneration 75
                        ]
            }
+
+-- Super simple parsing
 
 parseAll :: Parser [Int]
 parseAll = do
@@ -21,18 +23,29 @@ parseAll = do
   endOfInput
   pure list
 
-iterateBlinkTo :: Int -> [Int] -> Int
-iterateBlinkTo n xs = sum $ IM.elems $ (iterate aatto $ IM.fromList (map (,1) xs)) !! n
+-- And epic math
 
-tuho :: (Int, t) -> [(Int, t)]
-tuho (x, n) = map (, n) $ blink x
+blinkGeneration :: Int -> [Int] -> Int
+blinkGeneration n xs = sum $ iterate nextGen firstGen !! n
+  where firstGen = IM.fromList $ map (,1) xs
+        nextGen = IM.fromListWith (+) . kaboom . IM.toList
 
-aatto :: Num a => IM.IntMap a -> IM.IntMap a
-aatto m = IM.fromListWith (+) $ concatMap tuho $ IM.toList m
+kaboom :: [(Int, a)] -> [(Int, a)]
+kaboom xs = [ (new, n)
+            | (old, n) <- xs
+            , new <- blink old
+            ]
 
 blink :: Int -> [Int]
 blink x | x == 0      = [1]
-        | oddity == 0 = (\(a, b) -> [read a, read b]) $ splitAt pos intDigits
+        | even digits = [upper, lower]
         | otherwise   = [2024*x]
-  where intDigits = show x
-        (pos, oddity) = quotRem (length intDigits) 2
+  where digits = ceilLog10 x
+        (upper, lower) = quotRem x (10 ^ (digits .>>. 1))
+
+-- |10-base logarithm rounded up, i.e. digit count.
+ceilLog10 :: Int -> Int
+ceilLog10 x | x < 1     = error "Operand not positive"
+            | otherwise = f 10 1 x
+  where f n logN a = if a < n then logN
+                     else f (10*n) (logN+1) a
