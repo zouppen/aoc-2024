@@ -1,6 +1,6 @@
 module Tontut (tontut) where
 
-import Tonttu
+import Tonttu (Tonttu, t)
 import qualified Day01
 import qualified Day02
 import qualified Day03
