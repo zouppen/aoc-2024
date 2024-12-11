@@ -9,8 +9,8 @@ import Day
 
 task :: Day [Int] Int
 task = Day { parser  = parseAll
-           , solvers = [ part1 $ \p -> sum $ IM.elems $ (iterate aatto $ IM.fromList (map (,1) p)) !! 25
-                       , part2 $ \p -> sum $ IM.elems $ (iterate aatto $ IM.fromList (map (,1) p)) !! 75
+           , solvers = [ part1 $ iterateBlinkTo 25
+                       , part2 $ iterateBlinkTo 75
                        ]
            }
 
@@ -21,16 +21,18 @@ parseAll = do
   endOfInput
   pure list
 
+iterateBlinkTo :: Int -> [Int] -> Int
+iterateBlinkTo n xs = sum $ IM.elems $ (iterate aatto $ IM.fromList (map (,1) xs)) !! n
+
 tuho :: (Int, t) -> [(Int, t)]
-tuho (x, n) = map (, n) $ bl x
+tuho (x, n) = map (, n) $ blink x
 
 aatto :: Num a => IM.IntMap a -> IM.IntMap a
 aatto m = IM.fromListWith (+) $ concatMap tuho $ IM.toList m
 
-bl :: Int -> [Int]
-bl x = if x == 0
-       then [1]
-       else if mod (length intDigits) 2 == 0
-            then (\(a, b) -> [read a, read b]) $ splitAt (length intDigits `div` 2) intDigits
-            else [2024*x]
-   where intDigits = show x
+blink :: Int -> [Int]
+blink x | x == 0      = [1]
+        | oddity == 0 = (\(a, b) -> [read a, read b]) $ splitAt pos intDigits
+        | otherwise   = [2024*x]
+  where intDigits = show x
+        (pos, oddity) = quotRem (length intDigits) 2
