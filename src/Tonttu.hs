@@ -59,7 +59,7 @@ runnerWrap act day@Day{..} file parts = do
   startTime <- getTime MonotonicCoarse
   inputAct <- bgRun $ parseBinFile parser file
   let m = M.fromList solvers
-      partList = T.intercalate ", " $ "input" : map fst solvers
+      partList = T.intercalate ", " $ "parser" : map fst solvers
       lookupPart part = case M.lookup part m of
           Nothing -> fail $ T.unpack $ "Part name unknown. Should be one of: " <> partList
           Just a  -> pure (part, a)
@@ -83,7 +83,7 @@ runPlain Day{..} CommonVars{..} parts = do
             pure $ case solver of
               ShowSolver f   -> show $ f input
               StringSolver f -> f input
-        finder "input" =
+        finder "parser" =
           toRunner "parser only" $ show <$> atomically inputAct
         finder part = lookupPart part >>= runner
 
@@ -98,8 +98,8 @@ runJson Day{..} CommonVars{..} parts = do
             pure $ case solver of
               ShowSolver f    -> toJSON $ f input
               StringSolver f  -> toJSON $ f input
-        finder "input" =
-          toRunner "input" $ toJSON <$> atomically inputAct
+        finder "parser" =
+          toRunner "parser" $ toJSON <$> atomically inputAct
         finder part = lookupPart part >>= runner
 
 t :: (ToJSON a, ToJSON b, Show a, Show b) => k -> Day a b -> M.Map k Tonttu

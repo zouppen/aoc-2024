@@ -29,8 +29,8 @@ argsDef = Args{ days = def &= typ "DAY" &= args
                      \day under inputs/ subdirectory, e.g. inputs/02"
               , part = def &=
                 help "Solve specific part. Can be applied multiple times. \
-                     \If not set, all parts are solved. Magic value 'input' \
-                     \prints puzzle input after parsing."
+                     \If not set, all parts are solved. Magic value 'parser' \
+                     \prints parsed puzzle input."
               , json = False &=
                 help "Use JSON output instead of Haskell pretty-printing"
               }
