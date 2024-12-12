@@ -312,3 +312,20 @@ Tomorrow it's an even day so maybe there will be grids again. I know
 you well, Mr. Wastl.
 
 View my code: [Day11.hs](src/Day11.hs)
+
+## Day 12, Thursday
+
+Assignment: [Garden Groups](https://adventofcode.com/2024/day/12)
+
+Pretty demanding. Used basically all of my non-working hours with this
+task and also coded during monthly work meeting.
+
+My algorithms were way too complex. Tried to walk the outer line and
+developed a fancy algorithm for it, just to be thrown to a garbage
+pile after reading the assignment examples more carefully to notice
+there are enclaves in the data (letters B inside A area in the end of
+part 2 example section.
+
+I feel stupid and unhappy.
+
+View my code: [Day12.hs](src/Day12.hs)

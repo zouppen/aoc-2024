@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 module Grid ( Grid(..)
             , bounds
+            , gridCoord
             , gridParser
             , renderGrid
             ) where
@@ -24,6 +25,8 @@ instance (A.ToJSON a) => A.ToJSON (Grid a)
 bounds :: Grid a -> (Int, Int) -> Bool
 bounds Grid{..} (x, y) = x >= 0 && x < cols &&
                          y >= 0 && y < rows
+
+gridCoord g = (trail g, rows g)
 
 gridParser :: (Grid a -> Parser a) -> a -> Parser (Grid a)
 gridParser p emptyA = cells' $ Grid emptyA 0 0 0
