@@ -317,8 +317,9 @@ View my code: [Day11.hs](src/Day11.hs)
 
 Assignment: [Garden Groups](https://adventofcode.com/2024/day/12)
 
-Pretty demanding. Used basically all of my non-working hours with this
-task and also coded during monthly work meeting.
+Yeah it indeed was a grid day. And a pretty demanding one. Used
+basically all of my non-working hours with this task and also coded
+during monthly work meeting.
 
 My algorithms were way too complex. Tried to walk the outer line and
 developed a fancy algorithm for it, just to be thrown to a garbage
@@ -326,6 +327,14 @@ pile after reading the assignment examples more carefully to notice
 there are enclaves in the data (letters B inside A area in the end of
 part 2 example section.
 
-I feel stupid and unhappy.
+Finally just a horizontal and vertical walk "between the lines"
+worked, checking if the pair on left & right and up & down were the
+same.
+
+I feel stupid and unhappy. Don't have time to write this log since I
+used all of my time and even more.
+
+The only part made me slightly happy was the somewhat epic set algebra
+function `isles` and its helper function `getTouching`.
 
 View my code: [Day12.hs](src/Day12.hs)
