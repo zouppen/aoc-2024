@@ -352,8 +352,8 @@ competition mode immediately after seeing the 10000000000000 addition
 and didn't even try to improve the brute-forcer I had.
 
 The code explains the details better than text, but the idea is to
-find a [line-line
-intersection(https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
+find a 
+[line-line intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
 of two lines. "Home points" are defined so that A intersects the origo
 and B intersects the prize point. Their slopes are their y and x
 deltas divided. If for both A and B the horizontal (x-axis) distance
