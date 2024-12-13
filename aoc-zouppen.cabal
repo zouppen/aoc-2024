@@ -37,6 +37,7 @@ Executable aoc-zouppen-2024
     Day11
     Day12
     Grid
+    GridTools
     Tonttu
     Tontut
   Build-Depends:

@@ -8,21 +8,22 @@ import qualified Data.Set as S
 import Data.Aeson (ToJSON)
 import GHC.Generics
 import Grid
+import GridTools
 
 import Day
 
-task :: Day (Grid Plots) Int
-task = Day { parser  = gridParser cell (Plots mempty)
-           , solvers = [ part1 $ part1price . stuff
+task :: Day Plots Int
+task = Day { parser  = stuff <$> gridParser cell (Plots mempty)
+           , solvers = [ part1 $ part1price
                        , part2 $ part2price
                        ]
            }
 
 type Coord = (Int, Int)
 
-newtype Plots = Plots (M.Map Char (S.Set Coord)) deriving (Show, Generic)
-
 type Coords = S.Set Coord
+
+newtype Plots = Plots (M.Map Char Coords) deriving (Show, Generic)
 
 instance ToJSON Plots
 
@@ -63,27 +64,27 @@ part1price (Plots plots) = sum $ [ length isle * formPeri isle
                                  , isle <- isles plot
                                  ]
 
-sillyWalks :: Grid a -> [((Int, Int), (Int, Int))]
-sillyWalks Grid{..} = h <> v
+sillyWalks :: BoundInfo Int -> [((Int, Int), (Int, Int))]
+sillyWalks BoundInfo{..} = h <> v
   where h = [ ((x,y-1), (x, y))
-            | y <- [0..cols] -- overshoot on both edges
-            , x <- [0..rows] -- overshoot by one to cut streak
+            | y <- [yMin..yMax+1] -- overshoot on both edges
+            , x <- [xMin..xMax+1] -- overshoot by one to cut streak
             ]
         v = [ ((x-1,y), (x, y))
-            | x <- [0..rows] -- Same tricks as above but vertical
-            , y <- [0..cols]
+            | x <- [xMin..xMax+1] -- Same tricks as above but vertical
+            , y <- [yMin..yMax+1]
             ]
 
-himmeli :: Grid a -> S.Set (Int, Int) -> Int
-himmeli grid isle = length $ filter isEdge $ mergeSame $ map testSide $ sillyWalks grid
+himmeli :: S.Set (Int, Int) -> Int
+himmeli isle = length $ filter isEdge $ mergeSame $ map testSide $
+               sillyWalks $ getBoundsXY isle
   where testSide (a, b) = (test a, test b)
         test = flip S.member isle
-        isEdge (a,b) = a /= b
+        isEdge (a, b) = a /= b
         mergeSame = map head . group
 
-part2price :: Grid Plots -> Int
-part2price grid = sum $ [ length isle * himmeli grid isle
-                        | plot <- M.elems plots
-                        , isle <- isles plot
-                        ]
-  where Plots plots = stuff grid
+part2price :: Plots -> Int
+part2price (Plots plots) = sum $ [ length isle * himmeli isle
+                                 | plot <- M.elems plots
+                                 , isle <- isles plot
+                                 ]

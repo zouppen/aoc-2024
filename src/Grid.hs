@@ -26,6 +26,10 @@ bounds :: Grid a -> (Int, Int) -> Bool
 bounds Grid{..} (x, y) = x >= 0 && x < cols &&
                          y >= 0 && y < rows
 
+-- |Get coordinate in format (x,y) at parse time. Later gives final
+-- coordinate where parsing ended which might not be what you've
+-- expected.
+gridCoord :: Grid a -> (Int, Int)
 gridCoord g = (trail g, rows g)
 
 gridParser :: (Grid a -> Parser a) -> a -> Parser (Grid a)
