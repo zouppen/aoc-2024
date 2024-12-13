@@ -1,9 +1,9 @@
 # Logbook 2024
 
-## Other logbooks worth reading
+## Other sites worth reading
 
 Keep on reading, but I just want to say that I have used the following
-sites for a therapy source after finishing my daily puzzles:
+sites as a therapy after finishing my daily puzzles:
 
 * [Saaste's AoC blog](https://saaste.net/muuta/ohjelmointi/advent-of-code-2024/) (in Finnish)
 * [Reddit AoC](https://old.reddit.com/r/adventofcode/) solution megathreads
