@@ -363,7 +363,7 @@ corresponding button and it applies to both A and B, then the count
 of button presses is that integer value. Otherwise there is no winning
 combination.
 
-Haskell was a good tool with built-in Rational type which allows doing
+Haskell was a good tool choice with built-in Rational type which allows doing
 non-lossy divisions and there was no need to do integer-only math. It
 might've improved computational efficiency, but this time there wasn't
 any need to optimize further. Calculating the solution takes 3
