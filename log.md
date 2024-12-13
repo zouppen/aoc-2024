@@ -354,17 +354,20 @@ and didn't even try to improve the brute-forcer I had.
 The code explains the details better than text, but the idea is to
 find a 
 [line-line intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
-of two lines. "Home points" are defined so that A intersects the origo
-and B intersects the prize point. Their slopes are their y and x
-deltas divided. If for both A and B the horizontal (x-axis) distance
-between their "home point" and the intersection point is divisible by
-their x delta, the is a solution for that particular "machine".
+of two lines. "Home points" are defined so that the line for A
+intersects the origin (0,0) and line for B intersects the prize
+point. Line slopes are defined simply so that y delta is divided by x
+delta. If the horizontal (x-axis) distance between the "home point"
+and the intersection point is divisible by the x delta of the
+corresponding button and it applies to both A and B, then the count
+of button presses is that integer value. Otherwise there is no winning
+combination.
 
 Haskell was a good tool with built-in Rational type which allows doing
 non-lossy divisions and there was no need to do integer-only math. It
-might've improved computational efficiency, but this time no need to
-optimize further. Calculating the solution takes 3 milliseconds on my
-laptop, non-threaded.
+might've improved computational efficiency, but this time there wasn't
+any need to optimize further. Calculating the solution takes 3
+milliseconds on my laptop, non-threaded.
 
 I also replaced the original bruteforcer from part 2 with the
 analytical solution but if you're interested, the old one is found in
