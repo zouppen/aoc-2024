@@ -64,8 +64,10 @@ part1price (Plots plots) = sum $ [ length isle * formPeri isle
                                  , isle <- isles plot
                                  ]
 
-sillyWalks :: BoundInfo Int -> [((Int, Int), (Int, Int))]
-sillyWalks BoundInfo{..} = h <> v
+-- Part 2. Was pain to do but looks relatively nice.
+
+himmeli :: BoundInfo Int -> [((Int, Int), (Int, Int))]
+himmeli BoundInfo{..} = h <> v
   where h = [ ((x,y-1), (x, y))
             | y <- [yMin..yMax+1] -- overshoot on both edges
             , x <- [xMin..xMax+1] -- overshoot by one to cut streak
@@ -75,16 +77,19 @@ sillyWalks BoundInfo{..} = h <> v
             , y <- [yMin..yMax+1]
             ]
 
-himmeli :: S.Set (Int, Int) -> Int
-himmeli isle = length $ filter isEdge $ mergeSame $ map testSide $
-               sillyWalks $ getBoundsXY isle
+-- |Calculates Part 2 perimeter using just walking on the border of
+-- lines and columns. Actually, it would be Part 1 answer if you leave
+-- out mergeSame.
+perimeterPt2 :: S.Set (Int, Int) -> Int
+perimeterPt2 isle = length $ filter isEdge $ mergeSame $ map testSide $
+                    himmeli $ getBoundsXY isle
   where testSide (a, b) = (test a, test b)
         test = flip S.member isle
         isEdge (a, b) = a /= b
         mergeSame = map head . group
 
 part2price :: Plots -> Int
-part2price (Plots plots) = sum $ [ length isle * himmeli isle
+part2price (Plots plots) = sum $ [ length isle * perimeterPt2 isle
                                  | plot <- M.elems plots
                                  , isle <- isles plot
                                  ]
