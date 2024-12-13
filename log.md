@@ -338,3 +338,36 @@ The only part made me slightly happy was the somewhat epic set algebra
 function `isles` and its helper function `getTouching`.
 
 View my code: [Day12.hs](src/Day12.hs)
+
+## Day 13, Friday
+
+Assignment: [Claw Contraption](https://adventofcode.com/2024/day/13)
+
+Very pleasant task, some parser writing and euclidean math.
+
+First part I did with brute-forcing since I didn't know if what would
+come next. Then some pen and paper excercises to get the line
+intersection math correctly. It took me hours, anyway. I get out of
+competition mode immediately after seeing the 10000000000000 addition
+and didn't even try to improve the brute-forcer I had.
+
+The code explains the details better than text, but the idea is to
+find a [line-line
+intersection(https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
+of two lines. "Home points" are defined so that A intersects the origo
+and B intersects the prize point. Their slopes are their y and x
+deltas divided. If for both A and B the horizontal (x-axis) distance
+between their "home point" and the intersection point is divisible by
+their x delta, the is a solution for that particular "machine".
+
+Haskell was a good tool with built-in Rational type which allows doing
+non-lossy divisions and there was no need to do integer-only math. It
+might've improved computational efficiency, but this time no need to
+optimize further. Calculating the solution takes 3 milliseconds on my
+laptop, non-threaded.
+
+I also replaced the original bruteforcer from part 2 with the
+analytical solution but if you're interested, the old one is found in
+the commit history.
+
+View my code: [Day13.hs](src/Day13.hs)
