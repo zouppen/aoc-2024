@@ -1,5 +1,13 @@
 # Logbook 2024
 
+## Other logbooks worth reading
+
+Keep on reading, but I have also used the following sites for group
+therapy after finishing my daily puzzle.
+
+* [Saaste's AoC blog](https://saaste.net/muuta/ohjelmointi/advent-of-code-2024/) (in Finnish)
+* [Reddit AoC](https://old.reddit.com/r/adventofcode/) solution megathreads
+
 ## Day 1, Sunday
 
 Assignment: [Historian Hysteria](https://adventofcode.com/2024/day/1)
