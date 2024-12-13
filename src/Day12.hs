@@ -19,8 +19,6 @@ task = Day { parser  = stuff <$> gridParser cell (Plots mempty)
                        ]
            }
 
-type Coord = (Int, Int)
-
 type Coords = S.Set Coord
 
 newtype Plots = Plots (M.Map Char Coords) deriving (Show, Generic)

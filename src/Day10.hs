@@ -21,8 +21,6 @@ task = Day { parser  = gridParser sparse $ TrailMap mempty mempty
 
 -- Types
 
-type Coord = (Int, Int)
-
 data TrailMap = TrailMap { topo       :: M.Map Coord Word8
                          , trailheads :: [Coord]
                          } deriving (Show, Generic)

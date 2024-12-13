@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
 module Grid ( Grid(..)
+            , Coord
             , bounds
             , gridCoord
             , gridParser
@@ -14,6 +15,9 @@ import qualified Data.ByteString.Char8 as B
 import GHC.Generics
 import Text.Printf
 
+-- |Coordinate pair (x, y)
+type Coord = (Int, Int)
+
 data Grid a = Grid { stuff  :: a
                    , rows   :: !Int
                    , cols   :: !Int
@@ -22,14 +26,14 @@ data Grid a = Grid { stuff  :: a
 
 instance (A.ToJSON a) => A.ToJSON (Grid a)
 
-bounds :: Grid a -> (Int, Int) -> Bool
+bounds :: Grid a -> Coord -> Bool
 bounds Grid{..} (x, y) = x >= 0 && x < cols &&
                          y >= 0 && y < rows
 
 -- |Get coordinate in format (x,y) at parse time. Later gives final
 -- coordinate where parsing ended which might not be what you've
 -- expected.
-gridCoord :: Grid a -> (Int, Int)
+gridCoord :: Grid a -> Coord
 gridCoord g = (trail g, rows g)
 
 gridParser :: (Grid a -> Parser a) -> a -> Parser (Grid a)
@@ -58,7 +62,7 @@ validate :: MonadFail f => Grid a -> f ()
 validate Grid{..} = unless (trail == 0) $ fail $
   printf "Trailing row %d length %d is uneven" rows trail
 
-renderGrid :: Grid a -> ((Int, Int) -> Char) -> B.ByteString
+renderGrid :: Grid a -> (Coord -> Char) -> B.ByteString
 renderGrid Grid{..} charFunc = fst $ B.unfoldrN size f (0,0)
   where size = (cols+1)*rows
         f (x,y) = Just $ if x == cols
