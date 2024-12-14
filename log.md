@@ -382,3 +382,36 @@ analytical solution but if you're interested, the old one is found in
 the commit history.
 
 View my code: [Day13.hs](src/Day13.hs)
+
+## Day 14, Saturday
+
+Assignment: [Restroom Redoubt](https://adventofcode.com/2024/day/14)
+
+Puzzle soundtrack: [paniq - Heavy Working Robot](https://paniq.bandcamp.com/track/heavy-working-robot)
+
+Part 1 was rather straightforward. I didn't like there wasn't
+dimensions in the input file so those needed to be hard-coded in the
+code to run the code against the example and when switching to real
+input.
+
+Part 2. What the !%&%? I found the repeating period which gave me the
+upper bound of the value. Then I entered half of it to the answer
+validator to binary search the answer. It said "too small". Then I
+redid with the upper part and got the frames limited to one quarter
+than original. It was 4 minutes of rendered video at 10 fps. Faster
+than coding the logic.
+
+In the top row of the video is the generation ("second") number LSB
+binary encoded.
+
+My code produced raw grayscale pixels which can be rendered to a video using ffmpeg:
+
+```
+ffmpeg -f rawvideo -pixel_format gray8 -video_size 101x104 -framerate 10 -i /tmp/day14part2 -vf scale=iw*8:ih*8:flags=neighbor hullu.mp4
+```
+
+Life is.
+
+![](assets/day14-video.png "The correct frame")
+
+View my code: [Day14.hs](src/Day14.hs)

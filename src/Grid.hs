@@ -22,7 +22,7 @@ data Grid a = Grid { stuff  :: a
                    , rows   :: !Int
                    , cols   :: !Int
                    , trail  :: !Int
-                   } deriving (Show, Generic)
+                   } deriving (Show, Eq, Generic)
 
 instance (A.ToJSON a) => A.ToJSON (Grid a)
 

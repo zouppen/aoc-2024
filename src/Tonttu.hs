@@ -2,6 +2,7 @@
 module Tonttu ( Runner(..)
               , Tonttu(..)
               , parseBinFile
+              , dayParser
               , niputa
               , t
               ) where
@@ -115,3 +116,7 @@ tonttuile :: Enum a => a -> [Maybe b] -> [(a, b)]
 tonttuile i (Nothing:xs) = tonttuile (succ i) xs
 tonttuile i (Just x:xs) = (i,x) : tonttuile (succ i) xs
 tonttuile _ [] = []
+
+-- |Shorthand for calling the parser
+dayParser :: Day a b -> FilePath -> IO a
+dayParser = parseBinFile . parser
