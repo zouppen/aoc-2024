@@ -1,21 +1,20 @@
-{-# LANGUAGE DeriveGeneric, RecordWildCards, TupleSections #-}
-module Day15 where
+{-# LANGUAGE DeriveGeneric, RecordWildCards #-}
+module Day15 (task) where
 
 import Control.Applicative
-import Data.Attoparsec.ByteString.Char8 hiding (takeWhile)
+import Data.Attoparsec.ByteString.Char8
 import Data.List (unfoldr)
 import qualified Data.Map as M
-import qualified Data.Set as S
 import Data.Aeson (ToJSON)
-import GHC.Generics
+import GHC.Generics (Generic)
 import Grid
-import GridTools
 
 import Day
 
 task :: Day Input Int
 task = Day { parser  = everything
            , solvers = [ part1 $ score . last . iterateJust generation
+                       , part2 $ score . last . iterateJust generation . enlarge
                        ]
            }
 
@@ -24,7 +23,7 @@ data Input = Input { arena      :: M.Map Coord Obj
                    , directions :: [Coord]
                    } deriving (Show, Generic)
 
-data Obj = Wall | Box deriving (Show, Generic)
+data Obj = Wall | Box | BigBoxLeft | BigBoxRight deriving (Show, Generic)
 
 data Arena = Arena { robots  :: [Coord]
                    , arena'  :: M.Map Coord Obj
@@ -44,7 +43,8 @@ everything = do
   robotPos <- case robots stuff of
     [a] -> pure a
     _   -> fail "Incorrect amount of robots, expecting only one"
-  pure Input{ arena = arena' stuff, ..}
+  pure Input{ arena = arena' stuff
+            , ..}
 
 ignoreBreak :: Parser p -> Parser p
 ignoreBreak p = p <|> (endOfLine >> p)
@@ -81,22 +81,48 @@ generation old@Input{..} = case directions of
     Just newArena -> Just Input{ directions = rest
                                , robotPos = tryPos
                                , arena = newArena
+                               , ..
                                }
     Nothing -> Just old{directions = rest} -- Nothing moved
   [] -> Nothing -- End of input
 
 -- |Push boxes at given direction or fail to do so
 push :: Coord -> Coord -> M.Map Coord Obj -> Maybe (M.Map Coord Obj)
-push pos d m = case m M.!? pos of
-  Nothing   -> Just m  -- Free space, return self
-  Just Wall -> Nothing -- None shall pass
-  Just Box  -> move <$> push next d m
-  where move = M.insert next Box . M.delete pos
-        next = addCoord pos d
+push pos d m = case (m M.!? pos, vertical) of
+  (Nothing, _)             -> Just m  -- Free space, return self
+  (Just Wall, _)           -> Nothing -- None shall pass
+  (Just BigBoxLeft, True)  -> tryPush pos m >>= tryPush (addCoord pos (1,0))
+  (Just BigBoxRight, True) -> tryPush pos m >>= tryPush (addCoord pos (-1,0))
+  (Just _, _)              -> tryPush pos m
+  where vertical = snd d /= 0
+        tryPush from cur = let to = addCoord from d
+                           in move from to <$> push to d cur
+
+move :: (Show k, Ord k) => k -> k -> M.Map k a -> M.Map k a
+move from to m = case (M.lookup from m, M.member to m) of
+  (Just a, False) -> M.insert to a $ M.delete from m
+  _ -> error "Illegal move "
 
 gps :: (Coord, Obj) -> Int
-gps (_, Wall)     = 0
-gps ((x, y), Box) = x + 100*y
+gps ((x, y), o) = case o of
+  Wall        -> 0
+  BigBoxRight -> 0 -- We calculate from left part
+  _           -> x + 100*y
 
 score :: Input -> Int
-score = sum . map gps . M.toList . arena
+score Input{..} = sum $ map gps $ M.toList $ arena
+
+-- Part 2 magic enlargement
+
+enlarge :: Input -> Input
+enlarge o = o{ arena = M.fromList $ concatMap enlargeCell $ M.toList $ arena o
+             , robotPos = let f (x, y) = (2*x, y)
+                          in f (robotPos o)
+             }
+
+enlargeCell :: (Coord, Obj) -> [(Coord, Obj)]
+enlargeCell ((x, y), o) = case o of
+  Box  -> zip sides [BigBoxLeft, BigBoxRight]
+  Wall -> zip sides [Wall, Wall]
+  _    -> error "Can't enlarge further"
+  where sides = [(2*x, y), (2*x+1, y)]

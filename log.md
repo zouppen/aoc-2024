@@ -415,3 +415,13 @@ Life is.
 ![](assets/day14-video.png "The correct frame")
 
 View my code: [Day14.hs](src/Day14.hs)
+
+## Day 15, Sunday
+
+Assignment: [Warehouse Woes](https://adventofcode.com/2024/day/15)
+
+Not too difficult but I was just not productive. The resulting code is
+rather clean and I'm happy with it, just not happy about my
+development time.
+
+View my code: [Day15.hs](src/Day15.hs)
