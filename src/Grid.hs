@@ -5,6 +5,7 @@ module Grid ( Grid(..)
             , gridCoord
             , gridParser
             , renderGrid
+            , addCoord
             ) where
 
 import Control.Applicative
@@ -70,3 +71,7 @@ renderGrid Grid{..} charFunc = fst $ B.unfoldrN size f (0,0)
         f (x,y) = Just $ if x == cols
                              then ('\n', (0, y+1))
                              else (charFunc (x,y), (x+1, y))
+
+-- Non-grid helper functions
+addCoord :: Coord -> Coord -> Coord
+addCoord (x1, y1) (x2, y2) = (x1+x2, y1+y2)
