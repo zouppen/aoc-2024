@@ -1,5 +1,5 @@
-{-# LANGUAGE DeriveGeneric, OverloadedStrings, RecordWildCards, TupleSections #-}
-module Day14 (task, areaTest, renderVideo)  where
+{-# LANGUAGE DeriveGeneric, OverloadedStrings, RecordWildCards #-}
+module Day14  where
 
 import Control.Applicative
 import Data.Aeson (ToJSON)
@@ -19,7 +19,7 @@ import Day
 task :: Day (Grid [Robot]) Int
 task = Day { parser  = robotArena areaProd
            , solvers = [ part1 part1Magic
-                       , ("part2", StringSolver (const "Render the video and find the frame!"))
+                       , part2 $ findTheNonOverlapping . uncycle . iterate generation
                        ]
            }
 
@@ -105,3 +105,13 @@ makeFrame genId g = B.pack $ frameLine <> pixels
 uncycle :: Eq a => [a] -> [a]
 uncycle [] = []
 uncycle (x:xs) = x : takeWhile (x/=) xs
+
+hasNoOverlaps :: Grid [Robot] -> Bool
+hasNoOverlaps g = all isSingleton $ group $ sort $ map toXY $ stuff g
+  where toXY Robot{..} = (posX, posY)
+        isSingleton [a] = True
+        isSingleton _   =False
+
+findTheNonOverlapping gs = case filter (hasNoOverlaps . snd) (zip [0..] gs) of
+  [(a, _)] -> a
+  _        -> error "This dummy logic didn't work this time, sorry"
