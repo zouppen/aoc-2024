@@ -415,8 +415,8 @@ Life is.
 ![](assets/day14-video.png "The correct frame")
 
 **Update from December 15th:** My friend told his strategy was to look
-for a frame where no robots were overlaping. There's only such frame
-in the input data. This is probably because Wastl has designed the
+for a frame where no robots were overlapping. There's only such frame
+in the cycle. This is probably because Wastl has designed the
 puzzle so that he first places the christmas tree and then randomizes
 some dots outside of the tree thingy. And then randomizes velocity
 vector for each robot and runs the simulation some random amount of
@@ -424,7 +424,7 @@ frames. Or probably pseudorandom, so it's possible to recreate the
 puzzle.
 
 So, my code solution is looking for such frame and there's no need to
-watch videos anymore. Run time 1.3 seconds
+watch videos anymore. Run time 1.3 seconds.
 
 View my code: [Day14.hs](src/Day14.hs)
 
