@@ -38,13 +38,15 @@ gridCoord g = (trail g, rows g)
 
 gridParser :: (Grid a -> Parser a) -> a -> Parser (Grid a)
 gridParser p emptyA = cells' $ Grid emptyA 0 0 0
-  where cells' g = (endOfInput >> validate g >> pure g) <|>
+  where cells' g = (endOfLine >> nextRow g >>= cells') <|>
+                   (stop >> validate g >> pure g) <|>
                    (cell p g >>= cells')
+        stop = endOfInput <> -- Ends to an end of input
+               endOfLine     -- Or a blank line
 
 cell :: (Grid a -> Parser a) -> Grid a -> Parser (Grid a)
-cell p g = (endOfLine >> nextRow g) <|>
-           ((wrap <$> p g) >>= nextCol)
-  where wrap a = g{stuff = a}
+cell p g = let wrap a = pure g{stuff = a}
+           in p g >>= wrap >>= nextCol
 
 nextCol :: Applicative f => Grid a -> f (Grid a)
 nextCol Grid{..} = pure Grid{trail = trail + 1, ..}
