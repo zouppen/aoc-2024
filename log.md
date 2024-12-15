@@ -424,7 +424,7 @@ frames. Or probably pseudorandom, so it's possible to recreate the
 puzzle.
 
 So, my code solution is looking for such frame and there's no need to
-watch videos anymore. Run time 1.3 seconds.
+watch videos anymore. Part 2 run time was a little less than 1 second.
 
 View my code: [Day14.hs](src/Day14.hs)
 

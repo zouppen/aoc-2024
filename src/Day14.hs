@@ -107,10 +107,15 @@ uncycle [] = []
 uncycle (x:xs) = x : takeWhile (x/=) xs
 
 hasNoOverlaps :: Grid [Robot] -> Bool
-hasNoOverlaps g = all isSingleton $ group $ sort $ map toXY $ stuff g
+hasNoOverlaps g = allUnique $ map toXY $ stuff g
   where toXY Robot{..} = (posX, posY)
-        isSingleton [_] = True
-        isSingleton _   = False
+
+allUnique :: Ord a => [a] -> Bool
+allUnique list = f mempty list
+  where f _ [] = True
+        f s (x:xs) = if S.member x s
+                     then False
+                     else f (S.insert x s) xs
 
 findTheNonOverlapping :: [Grid [Robot]] -> Int
 findTheNonOverlapping gs = case filter (hasNoOverlaps . snd) (zip [0..] gs) of
