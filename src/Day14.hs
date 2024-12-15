@@ -109,9 +109,10 @@ uncycle (x:xs) = x : takeWhile (x/=) xs
 hasNoOverlaps :: Grid [Robot] -> Bool
 hasNoOverlaps g = all isSingleton $ group $ sort $ map toXY $ stuff g
   where toXY Robot{..} = (posX, posY)
-        isSingleton [a] = True
-        isSingleton _   =False
+        isSingleton [_] = True
+        isSingleton _   = False
 
+findTheNonOverlapping :: [Grid [Robot]] -> Int
 findTheNonOverlapping gs = case filter (hasNoOverlaps . snd) (zip [0..] gs) of
   [(a, _)] -> a
   _        -> error "This dummy logic didn't work this time, sorry"
