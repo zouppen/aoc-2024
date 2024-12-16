@@ -18,17 +18,9 @@ task = Day { parser  = gridParser cell $ Objects mempty mempty
                        ]
            }
 
-data Direction = ToLeft
-               | ToRight
-               | ToUp
-               | ToDown
-               deriving (Show, Eq, Ord, Generic)
-
-instance ToJSON Direction
-
-data Patrol = Patrol { patrolY    :: !Int
-                     , patrolX    :: !Int
-                     , patrolDir  :: !Direction
+data Patrol = Patrol { patrolX    :: !Int
+                     , patrolY    :: !Int
+                     , patrolDir  :: !Coord
                      } deriving (Show, Eq, Ord, Generic)
 
 instance ToJSON Patrol
@@ -46,18 +38,18 @@ cell g = (anyChar >>= patrol >>= pure . addPatrol g) <|>
          (anyChar >>= obstacle >>= addObstacle g)
 
 addObstacle :: Applicative f => Grid Objects -> Bool -> f Objects
-addObstacle Grid{..} True = pure stuff{obst = S.insert (rows, trail) $ obst stuff}
+addObstacle Grid{..} True = pure stuff{obst = S.insert (trail, rows) $ obst stuff}
 addObstacle Grid{..} False = pure stuff
 
-addPatrol :: Grid Objects -> Direction -> Objects
-addPatrol Grid{..} d = stuff{patrols = Patrol rows trail d : patrols stuff}
+addPatrol :: Grid Objects -> Coord -> Objects
+addPatrol Grid{..} d = stuff{patrols = Patrol trail rows d : patrols stuff}
 
-patrol :: Alternative f => Char -> f Direction
+patrol :: Alternative f => Char -> f Coord
 patrol c = case c of
-  '<' -> pure ToLeft
-  '>' -> pure ToRight
-  '^' -> pure ToUp
-  'v' -> pure ToDown
+  '<' -> pure ( -1,  0)
+  '>' -> pure (  1,  0)
+  '^' -> pure (  0, -1)
+  'v' -> pure (  0,  1)
   _   -> empty
 
 obstacle :: Alternative f => Char -> f Bool
@@ -69,25 +61,17 @@ obstacle c = case c of
 -- Now the implementation
 
 patrolFwd :: Patrol -> Patrol
-patrolFwd Patrol{..} = f $ case patrolDir of
-  ToLeft  -> (  0, -1)
-  ToRight -> (  0,  1)
-  ToUp    -> ( -1,  0)
-  ToDown  -> (  1,  0)
-  where f (dy, dx) = Patrol { patrolY = patrolY + dy
-                            , patrolX = patrolX + dx
+patrolFwd Patrol{..} = f patrolDir
+  where f (dx, dy) = Patrol { patrolX = patrolX + dx
+                            , patrolY = patrolY + dy
                             , ..
                             }
 
-turnRight :: Direction -> Direction
-turnRight d = case d of
-  ToLeft  -> ToUp
-  ToUp    -> ToRight
-  ToRight -> ToDown
-  ToDown  -> ToLeft
+turnRight :: Coord -> Coord
+turnRight (x, y) = (-y, x)
 
 movePatrol :: Grid Objects -> Patrol -> Patrol
-movePatrol Grid{..} origP = if S.member (patrolY movedP, patrolX movedP) $ obst stuff
+movePatrol Grid{..} origP = if S.member (patrolX movedP, patrolY movedP) $ obst stuff
                             then origP{ patrolDir = turnRight (patrolDir origP) }
                             else movedP
   where movedP = patrolFwd origP
@@ -100,7 +84,7 @@ travel grid pat = if isIn
         isIn = bounds grid (patrolX next, patrolY next)
 
 toLocation :: Patrol -> (Int, Int)
-toLocation Patrol{..} = (patrolY, patrolX)
+toLocation Patrol{..} = (patrolX, patrolY)
 
 -- |A loop is something where the guard travels to the same direction
 -- at the same location.
@@ -119,10 +103,10 @@ singlePatrol g = case patrols (stuff g) of
   _   -> error "Expecting exactly 1 patrol"
 
 addObsts :: Grid Objects -> [Grid Objects]
-addObsts Grid{..} = [ Grid{stuff = stuff{obst = S.insert (y, x) (obst stuff)}, ..}
+addObsts Grid{..} = [ Grid{stuff = stuff{obst = S.insert (x, y) (obst stuff)}, ..}
                     | y <- [0..rows-1]
                     , x <- [0..cols-1]
-                    , not $ any (isStart y x) $ patrols stuff
-                    , S.notMember (y,x) $ obst stuff
+                    , not $ any (isStart x y) $ patrols stuff
+                    , S.notMember (x, y) $ obst stuff
                     ]
-  where isStart y x Patrol{..} = patrolY == y && patrolX == x
+  where isStart x y Patrol{..} = patrolX == x && patrolY == y
