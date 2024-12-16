@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Day ( Solver(..)
            , Day(..)
-           , part1
-           , part2
+           , part
            -- Re-exports to avoid including those every day
            , Generic
            , ToJSON
@@ -10,7 +9,7 @@ module Day ( Solver(..)
 
 import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString (Parser)
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import GHC.Generics (Generic)
 
 data Solver a b = ShowSolver (a -> b)
@@ -22,8 +21,5 @@ data Day a b = Day { parser  :: Parser a
 
 -- Shortcuts for defining the parts in individual day modules
 
-part1 :: (a -> b) -> (Text, Solver a b)
-part1 x = ("part1", ShowSolver x)
-
-part2 :: (a -> b) -> (Text, Solver a b)
-part2 x = ("part2", ShowSolver x)
+part :: Int -> (a -> b) -> (Text, Solver a b)
+part n x = (pack ("part" <> show n), ShowSolver x)

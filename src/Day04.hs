@@ -11,8 +11,8 @@ import Day
 
 task :: Day Kattila Int
 task = Day { parser  = kattila
-           , solvers = [ part1 $ length . filter manteli . joulupuuro
-                       , part2 $ length . raportoi
+           , solvers = [ part 1 $ length . filter manteli . joulupuuro
+                       , part 2 $ length . raportoi
                        ]
            }
 

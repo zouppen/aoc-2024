@@ -11,8 +11,8 @@ import Day
 
 task :: Day Lahjakori Int
 task = Day { parser  = lahjakori
-           , solvers = [ part1 $ joululaulu True
-                       , part2 $ joululaulu False
+           , solvers = [ part 1 $ joululaulu True
+                       , part 2 $ joululaulu False
                        ]
            }
 

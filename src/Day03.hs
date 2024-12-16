@@ -8,8 +8,8 @@ import Day
 
 task :: Day [Stmt] Int
 task = Day { parser  = stmts
-           , solvers = [ part1 $ total . doTask . filter (/= StmtDont)
-                       , part2 $ total . doTask
+           , solvers = [ part 1 $ total . doTask . filter (/= StmtDont)
+                       , part 2 $ total . doTask
                        ]
            }
 

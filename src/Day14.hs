@@ -16,8 +16,8 @@ import Grid
 
 task :: Day (Grid [Robot]) Int
 task = Day { parser  = robotArena areaProd
-           , solvers = [ part1 part1Magic
-                       , part2 $ findTheNonOverlapping . uncycle . iterate generation
+           , solvers = [ part 1 part1Magic
+                       , part 2 $ findTheNonOverlapping . uncycle . iterate generation
                        ]
            }
 

@@ -9,8 +9,8 @@ import Day
 
 task :: Day [Int] Int
 task = Day { parser  = parseAll
-           , solvers = [ part1 $ blinkGeneration 25
-                       , part2 $ blinkGeneration 75
+           , solvers = [ part 1 $ blinkGeneration 25
+                       , part 2 $ blinkGeneration 75
                        ]
            }
 

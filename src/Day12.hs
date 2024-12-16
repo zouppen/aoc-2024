@@ -12,8 +12,8 @@ import GridTools
 
 task :: Day Plots Int
 task = Day { parser  = stuff <$> gridParser cell (Plots mempty)
-           , solvers = [ part1 $ part1price
-                       , part2 $ part2price
+           , solvers = [ part 1 $ part1price
+                       , part 2 $ part2price
                        ]
            }
 

@@ -11,8 +11,8 @@ import Grid
 
 task :: Day (Grid Antennas) Int
 task = Day { parser  = gridParser cell $ Antennas mempty
-           , solvers = [ part1 $ length . maksalaatikko antinodesNoRepeat
-                       , part2 $ length . lanttulaatikko
+           , solvers = [ part 1 $ length . maksalaatikko antinodesNoRepeat
+                       , part 2 $ length . lanttulaatikko
                        ]
            }
 

@@ -8,8 +8,8 @@ import Day
 
 task :: Day [[Int]] Int
 task = Day { parser  = everything
-           , solvers = [ part1 $ length . filter isGoodRow
-                       , part2 $ length . filter isGoodRow2
+           , solvers = [ part 1 $ length . filter isGoodRow
+                       , part 2 $ length . filter isGoodRow2
                        ]
            }
 

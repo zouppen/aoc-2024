@@ -9,8 +9,8 @@ import Grid (Coord)
 
 task :: Day [Machine] Int
 task = Day { parser  = machines
-           , solvers = [ part1 $ sum . map (toCost . findCounts)
-                       , part1 $ sum . map (toCost . findCounts. toPart2)
+           , solvers = [ part 1 $ sum . map (toCost . findCounts)
+                       , part 1 $ sum . map (toCost . findCounts. toPart2)
                        ]
            }
 

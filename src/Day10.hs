@@ -12,8 +12,8 @@ import Grid
 
 task :: Day (Grid TrailMap) Int
 task = Day { parser  = gridParser sparse $ TrailMap mempty mempty
-           , solvers = [ part1 $ walkAll (length . S.fromList)
-                       , part2 $ walkAll length
+           , solvers = [ part 1 $ walkAll (length . S.fromList)
+                       , part 2 $ walkAll length
                        ]
            }
 

@@ -11,8 +11,8 @@ import Grid
 
 task :: Day Input Int
 task = Day { parser  = everything
-           , solvers = [ part1 $ score . last . iterateJust generation
-                       , part2 $ score . last . iterateJust generation . enlarge
+           , solvers = [ part 1 $ score . last . iterateJust generation
+                       , part 2 $ score . last . iterateJust generation . enlarge
                        ]
            }
 

@@ -10,8 +10,8 @@ import Day
 
 task :: Day [File] Int
 task = Day { parser  = parseAll
-           , solvers = [ part1 $ joulutorttu . defrag 0 . toDisk
-                       , part2 $ joulutorttu . toDisk . pickAndPlaces
+           , solvers = [ part 1 $ joulutorttu . defrag 0 . toDisk
+                       , part 2 $ joulutorttu . toDisk . pickAndPlaces
                        ]
            }
 

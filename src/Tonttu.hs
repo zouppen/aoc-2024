@@ -21,7 +21,7 @@ import qualified Data.Text as T
 import System.Clock (TimeSpec, Clock(MonotonicCoarse), getTime)
 import System.IO (IOMode(..), withFile)
 
-import Day
+import Day hiding (part)
 
 data Tonttu = Tonttu { plainRunner :: FilePath -> [Text] -> IO [Runner String]
                      , jsonRunner  :: FilePath -> [Text] -> IO [Runner Value]

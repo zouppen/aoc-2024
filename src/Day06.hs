@@ -11,8 +11,8 @@ import Grid
 
 task :: Day (Grid Objects) Int
 task = Day { parser  = gridParser cell $ Objects mempty mempty
-           , solvers = [ part1 $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a
-                       , part2 $ length . filter id .
+           , solvers = [ part 1 $ length . S.fromList . map toLocation . \a -> travel a $ singlePatrol a
+                       , part 2 $ length . filter id .
                          withStrategy (parListChunk 12 rseq) .
                          map gridHasLoop . addObsts
                        ]

@@ -10,8 +10,8 @@ import Day
 
 task :: Day ([Int], [Int]) Int
 task = Day { parser  = everything
-           , solvers = [ part1 doPart1
-                       , part2 doPart2
+           , solvers = [ part 1 doPart1
+                       , part 2 doPart2
                        ]
            }
 

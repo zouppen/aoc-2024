@@ -9,8 +9,8 @@ import Day
 
 task :: Day [Row] Integer
 task = Day { parser  = everything
-           , solvers = [ part1 $ sumPossibles [(+), (*)]
-                       , part2 $ sumPossibles [(+), (*), cc]
+           , solvers = [ part 1 $ sumPossibles [(+), (*)]
+                       , part 2 $ sumPossibles [(+), (*), cc]
                        ]
            }
 
