@@ -447,4 +447,18 @@ View my code: [Day15.hs](src/Day15.hs)
 
 Assignment: [Reindeer Maze](https://adventofcode.com/2024/day/16)
 
+First for some stupid reason I implemented my own shortest path
+algoritm but quicly found it's algorithmically complex. Was able to solve simple cases but not the real input. Too much time spent here.
+
+Then I spend much time reformatting my code to produce a graph instead
+which was fed to 
+[Martin Erwig's Functional Graph Library](https://hackage.haskell.org/package/fgl)
+which was able to find the route in 0.25 seconds. And my graph
+generation algorithm is far from efficient since it generates graph
+IDs by sorting the graph material to a Set and then numbering them.
+
+I learned how to use the graph library and my first shortest path
+algorithm task after my Master's degree and it was 14 years ago. Also,
+I can now say I master practical, real world use of list monad.
+
 View my code: [Day16.hs](src/Day16.hs)
