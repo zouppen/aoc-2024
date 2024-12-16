@@ -8,6 +8,7 @@ import qualified Data.Map as M
 
 import Day
 import Grid
+import Wastl (direction, ignoreNewline)
 
 task :: Day Input Int
 task = Day { parser  = everything
@@ -35,17 +36,13 @@ instance ToJSON Input
 everything :: Parser Input
 everything = do
   Grid{..} <- gridParser cell (Arena mempty mempty)
-  directions <- many $ ignoreBreak direction
+  directions <- many $ ignoreNewline direction
   endOfLine
   endOfInput
   robotPos <- case robots stuff of
     [a] -> pure a
     _   -> fail "Incorrect amount of robots, expecting only one"
-  pure Input{ arena = arena' stuff
-            , ..}
-
-ignoreBreak :: Parser p -> Parser p
-ignoreBreak p = p <|> (endOfLine >> p)
+  pure Input{arena = arena' stuff, ..}
 
 cell :: Grid Arena -> Parser Arena
 cell g = anyChar >>= \c -> case c of
@@ -58,19 +55,11 @@ cell g = anyChar >>= \c -> case c of
         pos = gridCoord g
         item a = old{ arena' = M.insert pos a $ arena' old }
 
-direction :: Parser Coord
-direction = anyChar >>= \c -> case c of
-  '<' -> pure (-1,  0)
-  '>' -> pure ( 1,  0)
-  '^' -> pure ( 0, -1)
-  'v' -> pure ( 0,  1)
-  _   -> empty
-
 -- Sokoban part begins
 
 iterateJust :: (a -> Maybe a) -> a -> [a]
 iterateJust f = unfoldr (fmap wrap . f)
-  where wrap x = (x, x)
+  where wrap a = (a, a)
 
 generation :: Input -> Maybe Input
 generation old@Input{..} = case directions of

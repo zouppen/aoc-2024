@@ -1,6 +1,6 @@
 cabal-version: 3.4
 name:          aoc-zouppen
-version:       2024.12.13
+version:       2024.12.15
 synopsis:      Zouppen's Advent of Code framework
 description:   Advent of Code framework and solutions by Zouppen for year 2024
 category:      Code Competitions
@@ -43,6 +43,7 @@ Executable aoc-zouppen-2024
     GridTools
     Tonttu
     Tontut
+    Wastl
   Build-Depends:
     base >= 4.9.0.0 && < 5,
     attoparsec ^>= 0.14,

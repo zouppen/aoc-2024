@@ -8,6 +8,7 @@ import Control.Parallel.Strategies
 
 import Day
 import Grid
+import Wastl (direction)
 
 task :: Day (Grid Objects) Int
 task = Day { parser  = gridParser cell $ Objects mempty mempty
@@ -34,7 +35,7 @@ instance ToJSON Objects
 -- Parsing
 
 cell :: Grid Objects -> Parser Objects
-cell g = (anyChar >>= patrol >>= pure . addPatrol g) <|>
+cell g = (addPatrol g <$> direction) <|>
          (anyChar >>= obstacle >>= addObstacle g)
 
 addObstacle :: Applicative f => Grid Objects -> Bool -> f Objects
@@ -43,14 +44,6 @@ addObstacle Grid{..} False = pure stuff
 
 addPatrol :: Grid Objects -> Coord -> Objects
 addPatrol Grid{..} d = stuff{patrols = Patrol trail rows d : patrols stuff}
-
-patrol :: Alternative f => Char -> f Coord
-patrol c = case c of
-  '<' -> pure ( -1,  0)
-  '>' -> pure (  1,  0)
-  '^' -> pure (  0, -1)
-  'v' -> pure (  0,  1)
-  _   -> empty
 
 obstacle :: Alternative f => Char -> f Bool
 obstacle c = case c of
