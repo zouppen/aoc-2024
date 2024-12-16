@@ -2,118 +2,106 @@
 module Day16 where
 
 import Control.Applicative
+import Control.Monad (guard)
 import Data.Attoparsec.ByteString.Char8
-import Data.List (unfoldr)
-import qualified Data.Map as M
+import qualified Data.Set as S
+import Data.Graph.Inductive.Graph (mkGraph)
+import Data.Graph.Inductive.PatriciaTree (Gr)
+import Data.Graph.Inductive.Query.SP (spLength)
 
 import Day
 import Grid
-import Wastl (direction, ignoreNewline)
 
-task :: Day Game Int
-task = Day { parser  = everything
-           , solvers = [ part 1 $ minimum . map score . filter isWon . race . undeadify
+task :: Day (Grid Arena) Int
+task = Day { parser  = gridParser cell (Arena mempty mempty mempty) <* endOfInput
+           , solvers = [ part 1 poroDijkstra
                        ]
            }
 
-data Arena = Arena { deers  :: [Coord]
-                   , maze'  :: M.Map Coord Obj
-                   } deriving (Show)
+data Arena = Arena { ways   :: S.Set Coord
+                   , starts :: [Coord]
+                   , ends   :: [Coord]
+                   } deriving (Show, Generic)
 
-data Game = Game { maze    :: M.Map Coord Obj
-                 , deerPos :: Coord
-                 , deerDir :: Coord
-                 , score   :: Int
-                 } deriving (Show, Generic)
+instance ToJSON Arena
 
-data Obj = Wall | End | BeenHere deriving (Show, Eq,Generic)
+data Node = End
+          | Node { nodePos :: Coord
+                 , nodeDir :: Coord
+                 } deriving (Show, Eq, Ord)
 
-instance ToJSON Game
-instance ToJSON Obj
+data Edge = Edge { fromNode :: Node
+                 , toNode   :: Node
+                 , cost     :: Int
+                 } deriving (Show)
 
--- Parsing
-
-everything :: Parser Game
-everything = do
-  Grid{..} <- gridParser cell (Arena mempty mempty)
-  directions <- many $ ignoreNewline direction
-  endOfInput
-  deerPos <- case deers stuff of
-    [a] -> pure a
-    _   -> fail "Incorrect amount of reindeers, expecting only one"
-  pure Game{ maze = maze' stuff
-           , deerPos = deerPos
-           , deerDir = (1,0) -- East, hardcoded in puzzle
-           , score = 0
-           }
+-- Parser
 
 cell :: Grid Arena -> Parser Arena
 cell g = anyChar >>= \c -> case c of
-  '#' -> pure $ item Wall
-  'E' -> pure $ item End
-  'S' -> pure old{deers = pos:deers old}
-  '.' -> pure old -- Empty cells are not populated
+  '#' -> pure old -- Walls are not stored
+  '.' -> pure way
+  'S' -> pure way{starts = pos:starts way}
+  'E' -> pure way{ends   = pos:ends way}
   _   -> empty
   where old = stuff g
         pos = gridCoord g
-        item a = old{ maze' = M.insert pos a $ maze' old }
+        way = old{ways = S.insert pos $ ways old}
 
--- Race begins
+-- Computer science part
 
-race :: Game -> [Game]
-race g@Game{..} = if M.member deerPos maze
-                  then [g] -- Crashed into something
-                  else [ game
-                       | move <- [(id, 1), (turnLeft, 1001), (turnRight, 1001)]
-                       , game <- race $ tryMove move g
-                       ]
+-- |I heard you like list monad so I put list in your list so you can
+-- iterate while you iterate.
+toEdges :: Grid Arena -> [Edge]
+toEdges g = do
+  -- For each waypoint
+  me <- S.toList $ ways $ stuff g
+  -- To every direction
+  dir <- unitCoords
+  let neighs = do
+        -- List of neighbors, if any, walking straigth
+        let neigh = addCoord me dir
+            node a = Node{nodePos = a, nodeDir = dir}
+        guard $ S.member neigh $ ways $ stuff g
+        pure $ Edge{ fromNode = node me
+                   , toNode   = node neigh
+                   , cost     = 1
+                   }
+      turns = do
+        -- List of valid turns without movement
+        let node a = Node{nodePos = me, nodeDir = a}
+        turn <- [turnLeft, turnRight]
+        pure $ Edge{ fromNode = node dir
+                   , toNode   = node (turn dir)
+                   , cost     = 1000
+                   }
 
-tryMove :: ((Coord -> Coord), Int) -> Game -> Game
-tryMove (turner, penalty) Game{..} =
-  let newDir = turner deerDir
-  in Game{ maze = M.insert deerPos BeenHere maze
-         , deerPos = addCoord deerPos newDir
-         , deerDir = newDir
-         , score = score + penalty
-         }
+  -- The goal can be reached from every direction. Otherwise output normal
+  -- movements and rotations.
+  if me `elem` ends (stuff g)
+    then pure $ Edge{ fromNode = Node{ nodePos = me, nodeDir = dir}
+                    , toNode   = End
+                    , cost     = 0
+                    }
+    else neighs <> turns
 
-isWon :: Game -> Bool
-isWon Game{..} = M.lookup deerPos maze == Just End
-
-undeadify g = let deadEnds = M.fromList $ map (,Wall) $ findDeadEnds g
-              in if null deadEnds
-                 then g -- All cleaned
-                 else undeadify $ g{maze = M.union deadEnds (maze g)}
-
-findDeadEnds :: Game -> [Coord]
-findDeadEnds Game{..} =
-  [ (x,y)
-  | y <- [0..maxY]
-  , x <- [0..maxX]
-  , (x,y) /= deerPos
-  , M.notMember (x, y) maze
-  , neighbors (x,y) > 2
-  ]
-  where ((maxX, maxY),_) = M.findMax maze
-        neighbors (x,y) = length $ filter isWall [ (x  , y+1)
-                                                 , (x  , y-1)
-                                                 , (x+1, y  )
-                                                 , (x-1, y  )
-                                                 ]
-        isWall pos = M.lookup pos maze == Just Wall
-
-renderGame :: Game -> String
-renderGame Game{..} =
-  [ if x == maxX+1
-    then '\n'
-    else if deerPos == (x, y)
-         then '@'
-         else case (M.lookup (x, y) maze) of
-                Just Wall     -> '#'
-                Just End      -> 'E'
-                Just BeenHere -> 'o'
-                Nothing -> '.'
-  | y <- [0..maxY]
-  , x <- [0..maxX+1]
-  ]
-  where ((maxX, maxY),_) = M.findMax maze
+poroDijkstra :: Grid Arena -> Int
+poroDijkstra g = case spLength start end graph of
+                   Nothing -> error "No route found"
+                   Just a  -> a
+  where
+    edges = toEdges g
+    edgeSet = S.fromList [ node
+                         | Edge{..} <- edges
+                         , node     <- [fromNode, toNode]
+                         ]
+    edgeNum e = S.findIndex e edgeSet
+    start = edgeNum Node { nodePos = head $ starts $ stuff $ g
+                         , nodeDir = (1,0) -- East
+                         }
+    end = edgeNum End
+    nodes = zip [0..] $ S.elems edgeSet
+    edges' = [ (edgeNum fromNode, edgeNum toNode, cost)
+             | Edge{..} <- edges
+             ]
+    graph = mkGraph nodes edges' :: Gr Node Int

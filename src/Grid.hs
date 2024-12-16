@@ -8,6 +8,7 @@ module Grid ( Grid(..)
             , addCoord
             , turnLeft
             , turnRight
+            , unitCoords
             ) where
 
 import Control.Applicative
@@ -83,3 +84,9 @@ turnLeft (x, y) = (y, -x)
 
 turnRight :: Coord -> Coord
 turnRight (x, y) = (-y, x)
+
+-- |Coordinates which are horizontal and vertical units (non-diagonal)
+unitCoords :: [Coord]
+unitCoords = [ ( 1, 0), (0,  1)
+             , (-1, 0), (0, -1)
+             ]
