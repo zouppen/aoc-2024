@@ -2,14 +2,12 @@
 module Day06 where
 
 import Control.Applicative
-import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
 import Control.Parallel.Strategies
-import GHC.Generics
-import Grid
 
 import Day
+import Grid
 
 task :: Day (Grid Objects) Int
 task = Day { parser  = gridParser cell $ Objects mempty mempty

@@ -2,11 +2,9 @@
 module Day09 where
 
 import Control.Applicative
-import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
 import Data.List (sortOn)
 import qualified Data.IntMap as IM
-import GHC.Generics
 
 import Day
 

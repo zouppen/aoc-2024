@@ -5,12 +5,10 @@ import Data.Attoparsec.ByteString.Char8 hiding (takeWhile)
 import Data.List (group)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Data.Aeson (ToJSON)
-import GHC.Generics
-import Grid
-import GridTools
 
 import Day
+import Grid
+import GridTools
 
 task :: Day Plots Int
 task = Day { parser  = stuff <$> gridParser cell (Plots mempty)

@@ -3,11 +3,9 @@ module Day13 where
 
 import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
-import GHC.Generics
-import Data.Aeson (ToJSON)
-import Grid (Coord)
 
 import Day
+import Grid (Coord)
 
 task :: Day [Machine] Int
 task = Day { parser  = machines

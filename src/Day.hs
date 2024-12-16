@@ -1,8 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Day where
+module Day ( Solver(..)
+           , Day(..)
+           , part1
+           , part2
+           -- Re-exports to avoid including those every day
+           , Generic
+           , ToJSON
+           ) where
 
+import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString (Parser)
 import Data.Text (Text)
+import GHC.Generics (Generic)
 
 data Solver a b = ShowSolver (a -> b)
                 | StringSolver (a -> String)

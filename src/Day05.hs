@@ -2,12 +2,10 @@
 module Day05 where
 
 import Control.Applicative
-import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.IntMap.Strict as IM
 import qualified Data.IntSet as IS
 import Data.List
-import GHC.Generics
 
 import Day
 

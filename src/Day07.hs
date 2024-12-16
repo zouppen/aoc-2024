@@ -3,9 +3,7 @@ module Day07 where
 
 import Control.Applicative
 import Control.Monad (guard)
-import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8
-import GHC.Generics
 
 import Day
 

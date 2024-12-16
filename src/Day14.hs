@@ -2,7 +2,6 @@
 module Day14  where
 
 import Control.Applicative
-import Data.Aeson (ToJSON)
 import Data.Attoparsec.ByteString.Char8 hiding (take, takeWhile)
 import Data.Bits
 import qualified Data.ByteString as B
@@ -10,11 +9,10 @@ import qualified Data.Set as S
 import Data.Foldable (traverse_)
 import Data.List (group, sort)
 import Data.Maybe (catMaybes)
-import GHC.Generics
-import Grid
 import System.IO
 
 import Day
+import Grid
 
 task :: Day (Grid [Robot]) Int
 task = Day { parser  = robotArena areaProd

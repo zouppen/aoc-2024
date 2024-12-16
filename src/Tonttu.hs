@@ -12,7 +12,7 @@ import Control.Concurrent.STM.TVar
 import Control.Exception (SomeException, try, throw)
 import Control.DeepSeq (NFData, deepseq)
 import Control.Monad.STM (STM, atomically, retry)
-import Data.Aeson (Value, ToJSON, toJSON)
+import Data.Aeson (Value, toJSON)
 import Data.Attoparsec.ByteString (Parser, eitherResult, parseWith)
 import qualified Data.ByteString as B
 import qualified Data.Map.Strict as M

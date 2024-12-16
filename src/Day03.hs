@@ -3,8 +3,6 @@ module Day03 where
 
 import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
-import Data.Aeson (ToJSON)
-import GHC.Generics
 
 import Day
 

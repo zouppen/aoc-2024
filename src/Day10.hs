@@ -5,12 +5,10 @@ import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Data.Aeson (ToJSON)
 import Data.Word
-import GHC.Generics
-import Grid
 
 import Day
+import Grid
 
 task :: Day (Grid TrailMap) Int
 task = Day { parser  = gridParser sparse $ TrailMap mempty mempty

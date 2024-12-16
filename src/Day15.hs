@@ -5,11 +5,9 @@ import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 import Data.List (unfoldr)
 import qualified Data.Map as M
-import Data.Aeson (ToJSON)
-import GHC.Generics (Generic)
-import Grid
 
 import Day
+import Grid
 
 task :: Day Input Int
 task = Day { parser  = everything

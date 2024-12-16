@@ -5,11 +5,9 @@ import Control.Applicative
 import Data.Attoparsec.ByteString.Char8 hiding (takeWhile)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Data.Aeson (ToJSON)
-import GHC.Generics
-import Grid
 
 import Day
+import Grid
 
 task :: Day (Grid Antennas) Int
 task = Day { parser  = gridParser cell $ Antennas mempty
