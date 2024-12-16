@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric, RecordWildCards #-}
+{-# LANGUAGE DeriveGeneric, RecordWildCards, TupleSections #-}
 module Day16 where
 
 import Control.Applicative
@@ -12,7 +12,7 @@ import Wastl (direction, ignoreNewline)
 
 task :: Day Game Int
 task = Day { parser  = everything
-           , solvers = [ part 1 $ minimum . map score . filter isWon . race
+           , solvers = [ part 1 $ minimum . map score . filter isWon . race . undeadify
                        ]
            }
 
@@ -80,6 +80,27 @@ tryMove (turner, penalty) Game{..} =
 isWon :: Game -> Bool
 isWon Game{..} = M.lookup deerPos maze == Just End
 
+undeadify g = let deadEnds = M.fromList $ map (,Wall) $ findDeadEnds g
+              in if null deadEnds
+                 then g -- All cleaned
+                 else undeadify $ g{maze = M.union deadEnds (maze g)}
+
+findDeadEnds :: Game -> [Coord]
+findDeadEnds Game{..} =
+  [ (x,y)
+  | y <- [0..maxY]
+  , x <- [0..maxX]
+  , (x,y) /= deerPos
+  , M.notMember (x, y) maze
+  , neighbors (x,y) > 2
+  ]
+  where ((maxX, maxY),_) = M.findMax maze
+        neighbors (x,y) = length $ filter isWall [ (x  , y+1)
+                                                 , (x  , y-1)
+                                                 , (x+1, y  )
+                                                 , (x-1, y  )
+                                                 ]
+        isWall pos = M.lookup pos maze == Just Wall
 
 renderGame :: Game -> String
 renderGame Game{..} =
