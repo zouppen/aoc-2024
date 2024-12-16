@@ -13,10 +13,10 @@ renderInput Input{..} =
     else if robotPos == (x, y)
          then '@'
          else case (M.lookup (x, y) arena) of
-                Just Wall        -> '#'
-                Just Box         -> 'O'
-                Just BigBoxLeft  -> '['
-                Just BigBoxRight -> ']'
+                Just Wall    -> '#'
+                Just Box     -> 'O'
+                Just BigBoxL -> '['
+                Just BigBoxR -> ']'
                 Nothing -> '.'
   | y <- [0..maxY]
   , x <- [0..maxX+1]

@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric, RecordWildCards #-}
-module Day15 (task) where
+module Day15 where
 
 import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
@@ -21,7 +21,7 @@ data Input = Input { arena      :: M.Map Coord Obj
                    , directions :: [Coord]
                    } deriving (Show, Generic)
 
-data Obj = Wall | Box | BigBoxLeft | BigBoxRight deriving (Show, Generic)
+data Obj = Wall | Box | BigBoxL | BigBoxR deriving (Show, Generic)
 
 data Arena = Arena { robots  :: [Coord]
                    , arena'  :: M.Map Coord Obj
@@ -87,11 +87,12 @@ generation old@Input{..} = case directions of
 -- |Push boxes at given direction or fail to do so
 push :: Coord -> Coord -> M.Map Coord Obj -> Maybe (M.Map Coord Obj)
 push pos d m = case (m M.!? pos, vertical) of
-  (Nothing, _)             -> Just m  -- Free space, return self
-  (Just Wall, _)           -> Nothing -- None shall pass
-  (Just BigBoxLeft, True)  -> tryPush pos m >>= tryPush (addCoord pos (1,0))
-  (Just BigBoxRight, True) -> tryPush pos m >>= tryPush (addCoord pos (-1,0))
-  (Just _, _)              -> tryPush pos m
+  (Nothing, _)         -> Just m  -- Free space, return self
+  (Just Wall, _)       -> Nothing -- None shall pass
+  -- Box moves. In case of big boxes, both sides must be pushed
+  (Just BigBoxL, True) -> tryPush pos m >>= tryPush (addCoord pos (1,0))
+  (Just BigBoxR, True) -> tryPush pos m >>= tryPush (addCoord pos (-1,0))
+  (Just _, _)          -> tryPush pos m -- Horizontal moves or small boxes
   where vertical = snd d /= 0
         tryPush from cur = let to = addCoord from d
                            in move from to <$> push to d cur
@@ -103,12 +104,12 @@ move from to m = case (M.lookup from m, M.member to m) of
 
 gps :: (Coord, Obj) -> Int
 gps ((x, y), o) = case o of
-  Wall        -> 0
-  BigBoxRight -> 0 -- We calculate from left part
-  _           -> x + 100*y
+  Wall    -> 0
+  BigBoxR -> 0 -- We calculate from the left part
+  _       -> x + 100*y
 
 score :: Input -> Int
-score Input{..} = sum $ map gps $ M.toList $ arena
+score Input{..} = sum $ map gps $ M.toList arena
 
 -- Part 2 magic enlargement
 
@@ -120,7 +121,7 @@ enlarge o = o{ arena = M.fromList $ concatMap enlargeCell $ M.toList $ arena o
 
 enlargeCell :: (Coord, Obj) -> [(Coord, Obj)]
 enlargeCell ((x, y), o) = case o of
-  Box  -> zip sides [BigBoxLeft, BigBoxRight]
+  Box  -> zip sides [BigBoxL, BigBoxR]
   Wall -> zip sides [Wall, Wall]
   _    -> error "Can't enlarge further"
   where sides = [(2*x, y), (2*x+1, y)]
