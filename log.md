@@ -436,4 +436,9 @@ Not too difficult but I was just not productive. The resulting code is
 rather clean and I'm happy with it, just not happy about my
 development time.
 
+If I had completed the puzzle quicker I would've had time to play
+[Sokoban](https://en.wikipedia.org/wiki/Sokoban) or actually a nice
+clone called [KAtomic](https://apps.kde.org/fi/katomic/). But now I'm
+quite fed up with warehouses and skip the fun.
+
 View my code: [Day15.hs](src/Day15.hs)
