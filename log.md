@@ -442,3 +442,9 @@ clone called [KAtomic](https://apps.kde.org/fi/katomic/). But now I'm
 quite fed up with warehouses and skip the fun.
 
 View my code: [Day15.hs](src/Day15.hs)
+
+## Day 16, Monday
+
+Assignment: [Reindeer Maze](https://adventofcode.com/2024/day/16)
+
+View my code: [Day16.hs](src/Day16.hs)
