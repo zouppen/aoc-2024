@@ -6,6 +6,8 @@ module Grid ( Grid(..)
             , gridParser
             , renderGrid
             , addCoord
+            , turnLeft
+            , turnRight
             ) where
 
 import Control.Applicative
@@ -75,3 +77,9 @@ renderGrid Grid{..} charFunc = fst $ B.unfoldrN size f (0,0)
 -- Non-grid helper functions
 addCoord :: Coord -> Coord -> Coord
 addCoord (x1, y1) (x2, y2) = (x1+x2, y1+y2)
+
+turnLeft :: Coord -> Coord
+turnLeft (x, y) = (y, -x)
+
+turnRight :: Coord -> Coord
+turnRight (x, y) = (-y, x)

@@ -60,9 +60,6 @@ patrolFwd Patrol{..} = f patrolDir
                             , ..
                             }
 
-turnRight :: Coord -> Coord
-turnRight (x, y) = (-y, x)
-
 movePatrol :: Grid Objects -> Patrol -> Patrol
 movePatrol Grid{..} origP = if S.member (patrolX movedP, patrolY movedP) $ obst stuff
                             then origP{ patrolDir = turnRight (patrolDir origP) }
