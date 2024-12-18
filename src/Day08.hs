@@ -7,7 +7,7 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 import Day
-import Grid
+import AocTools.Grid
 
 task :: Day (Grid Antennas) Int
 task = Day { parser  = gridParser cell $ Antennas mempty

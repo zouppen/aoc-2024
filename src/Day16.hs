@@ -7,7 +7,7 @@ import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
 
 import Day
-import Grid
+import AocTools.Grid
 import AocTools.Routing
 
 task :: Day (Grid Arena) Int

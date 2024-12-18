@@ -1,7 +1,8 @@
 {-# LANGUAGE RecordWildCards #-}
-module GridTools ( BoundInfo(..)
-                 , getBoundsXY
-                 ) where
+module AocTools.GridTools
+  ( BoundInfo(..)
+  , getBoundsXY
+  ) where
 
 data BoundInfo a = BoundInfo { xMin :: a
                              , xMax :: a

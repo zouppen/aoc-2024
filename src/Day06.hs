@@ -7,8 +7,8 @@ import qualified Data.Set as S
 import Control.Parallel.Strategies
 
 import Day
-import Grid
-import Wastl (direction)
+import AocTools.Grid
+import AocTools.Wastl (direction)
 
 task :: Day (Grid Objects) Int
 task = Day { parser  = gridParser cell $ Objects mempty mempty

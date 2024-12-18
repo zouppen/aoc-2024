@@ -9,7 +9,7 @@ import Data.List (group, sort)
 import Data.Maybe (catMaybes)
 
 import Day
-import Grid
+import AocTools.Grid
 
 task :: Day (Grid [Robot]) Int
 task = Day { parser  = robotArena areaProd

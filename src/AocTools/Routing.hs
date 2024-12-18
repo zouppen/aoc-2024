@@ -1,9 +1,10 @@
 {-# LANGUAGE RecordWildCards #-}
 -- |Helper functions to make using of hgl route graph search less
 -- complicated.
-module AocTools.Routing ( Edge(..)
-                        , dijkstraLen
-                        ) where
+module AocTools.Routing
+  ( Edge(..)
+  , dijkstraLen
+  ) where
 
 import Data.Graph.Inductive.Graph (mkGraph)
 import Data.Graph.Inductive.PatriciaTree (Gr)

@@ -5,7 +5,7 @@ import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 
 import Day
-import Grid (Coord)
+import AocTools.Grid (Coord)
 
 task :: Day [Machine] Int
 task = Day { parser  = machines

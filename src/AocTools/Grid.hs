@@ -1,15 +1,16 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards, DeriveGeneric #-}
-module Grid ( Grid(..)
-            , Coord
-            , bounds
-            , gridCoord
-            , gridParser
-            , renderGrid
-            , addCoord
-            , turnLeft
-            , turnRight
-            , unitCoords
-            ) where
+module AocTools.Grid
+  ( Grid(..)
+  , Coord
+  , bounds
+  , gridCoord
+  , gridParser
+  , renderGrid
+  , addCoord
+  , turnLeft
+  , turnRight
+  , unitCoords
+  ) where
 
 import Control.Applicative
 import Control.Monad (unless)

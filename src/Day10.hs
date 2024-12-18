@@ -8,7 +8,7 @@ import qualified Data.Set as S
 import Data.Word
 
 import Day
-import Grid
+import AocTools.Grid
 
 task :: Day (Grid TrailMap) Int
 task = Day { parser  = gridParser sparse $ TrailMap mempty mempty

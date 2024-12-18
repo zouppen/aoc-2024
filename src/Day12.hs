@@ -7,8 +7,8 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 import Day
-import Grid
-import GridTools
+import AocTools.Grid
+import AocTools.GridTools
 
 task :: Day Plots Int
 task = Day { parser  = stuff <$> gridParser cell (Plots mempty)

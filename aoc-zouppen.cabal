@@ -41,12 +41,12 @@ Executable aoc-zouppen-2024
     Day15
     Day16
     Day17
+    AocTools.Grid
+    AocTools.GridTools
     AocTools.Routing
-    Grid
-    GridTools
+    AocTools.Wastl
     Tonttu
     Tontut
-    Wastl
   Build-Depends:
     base >= 4.9.0.0 && < 5,
     array ^>= 0.5,

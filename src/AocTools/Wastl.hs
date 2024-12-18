@@ -1,12 +1,13 @@
 -- |Parsers for elements which Wastl often puts in his puzzles.
-module Wastl ( direction
-             , ignoreNewline
-             ) where
+module AocTools.Wastl
+  ( direction
+  , ignoreNewline
+  ) where
 
 import Control.Applicative
 import Data.Attoparsec.ByteString.Char8
 
-import Grid (Coord)
+import AocTools.Grid (Coord)
 
 direction :: Parser Coord
 direction = anyChar >>= \c -> case c of

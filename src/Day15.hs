@@ -7,8 +7,8 @@ import Data.List (unfoldr)
 import qualified Data.Map as M
 
 import Day
-import Grid
-import Wastl (direction, ignoreNewline)
+import AocTools.Grid
+import AocTools.Wastl (direction, ignoreNewline)
 
 task :: Day Input Int
 task = Day { parser  = everything
