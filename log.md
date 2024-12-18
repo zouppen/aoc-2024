@@ -462,3 +462,43 @@ algorithm task after my Master's degree and it was 14 years ago. Also,
 I can now say I master practical, real world use of list monad.
 
 View my code: [Day16.hs](src/Day16.hs)
+
+## Day 17, Tuesday
+
+Assignment: [Chronospatial Computer](https://adventofcode.com/2024/day/17)
+
+First, I implemented the Elf computer as a function `step` which
+basically runs one instruction at a time. This was necessary to
+complete part 1.
+
+In part 2 I was, once again trying brute-force first. Then, after
+finding out there's 3 bit shift in the code before jump, I found out
+that to find the
+[quine](https://en.wikipedia.org/wiki/Quine_(computing)), the input
+value has to be $3 \text{ bits} \times \text{code length} = 48 \text{
+bits}$, which is way too large value to bruteforced.
+
+I manually transpiled the code in my puzzle input from the Elf machine
+to Haskell, changed variable names a little bit and got:
+
+```haskell
+transpiled :: Int -> [Int]
+transpiled a = let b   = a .&. 7 `xor` 2
+                   out = (b `xor` (a .>>. b) `xor` 3) .&. 7
+                   c   = a .>>. 3
+               in out : if c == 0
+                        then []
+                        else transpiled c
+```
+
+The clue here was that the recursion runs until `c == 0` and `c` is
+right shifted from function input `a`. That means that if we want to
+go back in time, we know that `x <- [0..7], a <- 8*c+x`, in other
+words there are 8 possible inputs, but not all of them are valid. At
+least one should be, or the puzzle is insolvable.
+
+So, I defined function `back` which takes a test function (the "CPU"),
+possible c values and outputs valid a values. This is iterated until
+quine is constructed.
+
+View my code: [Day17.hs](src/Day17.hs)
