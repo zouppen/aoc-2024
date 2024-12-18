@@ -5,12 +5,10 @@ import Control.Applicative
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString.Char8
 import qualified Data.Set as S
-import Data.Graph.Inductive.Graph (mkGraph)
-import Data.Graph.Inductive.PatriciaTree (Gr)
-import Data.Graph.Inductive.Query.SP (spLength)
 
 import Day
 import Grid
+import AocTools.Routing
 
 task :: Day (Grid Arena) Int
 task = Day { parser  = gridParser cell (Arena mempty mempty mempty) <* endOfInput
@@ -30,11 +28,6 @@ data Node = End
                  , nodeDir :: Coord
                  } deriving (Show, Eq, Ord)
 
-data Edge = Edge { fromNode :: Node
-                 , toNode   :: Node
-                 , cost     :: Int
-                 } deriving (Show)
-
 -- Parser
 
 cell :: Grid Arena -> Parser Arena
@@ -52,7 +45,7 @@ cell g = anyChar >>= \c -> case c of
 
 -- |I heard you like list monad so I put list in your list so you can
 -- iterate while you iterate.
-toEdges :: Grid Arena -> [Edge]
+toEdges :: Grid Arena -> [Edge Node]
 toEdges g = do
   -- For each waypoint
   me <- S.toList $ ways $ stuff g
@@ -86,22 +79,9 @@ toEdges g = do
     else neighs <> turns
 
 poroDijkstra :: Grid Arena -> Int
-poroDijkstra g = case spLength start end graph of
+poroDijkstra g = case dijkstraLen (toEdges g) start End of
                    Nothing -> error "No route found"
                    Just a  -> a
-  where
-    edges = toEdges g
-    edgeSet = S.fromList [ node
-                         | Edge{..} <- edges
-                         , node     <- [fromNode, toNode]
-                         ]
-    edgeNum e = S.findIndex e edgeSet
-    start = edgeNum Node { nodePos = head $ starts $ stuff $ g
-                         , nodeDir = (1,0) -- East
-                         }
-    end = edgeNum End
-    nodes = zip [0..] $ S.elems edgeSet
-    edges' = [ (edgeNum fromNode, edgeNum toNode, cost)
-             | Edge{..} <- edges
-             ]
-    graph = mkGraph nodes edges' :: Gr Node Int
+  where start = Node { nodePos = head $ starts $ stuff $ g
+                     , nodeDir = (1,0) -- East
+                     }

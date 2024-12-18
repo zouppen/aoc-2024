@@ -41,6 +41,7 @@ Executable aoc-zouppen-2024
     Day15
     Day16
     Day17
+    AocTools.Routing
     Grid
     GridTools
     Tonttu
