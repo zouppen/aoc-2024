@@ -505,3 +505,25 @@ Run time 4 milliseconds. Development time... don't ask? Maybe 10
 hours. AoC burnout intensifies...
 
 View my code: [Day17.hs](src/Day17.hs)
+
+## Day 18, Wednesday
+
+Assignment: [RAM Run](https://adventofcode.com/2024/day/18)
+
+Very straightforward shortest path task, much simpler than
+day 16. However, managed still to spend 35 minutes to part 1 and 19
+minutes to part 2.
+
+While solving the puzzle, I had to wait for a solution for couple of
+minutes due to bruteforce nature of my list iteration from the item
+1024 onwards. So, afterwards, I added a binary search. For some reason
+I didn't find uncomplex binary search such as
+[bsearch(3)](https://www.man7.org/linux/man-pages/man3/bsearch.3.html)
+in libc. I made one. Now it runs part 2 in 0.22 seconds on my PC and
+part 1 takes only 53 milliseconds.
+
+I didn't even add all checks to edge generation so some of my edges
+are heading to dead ends, so there are some hidden efficiency around
+the corner, too.
+
+View my code: [Day18.hs](src/Day18.hs)
