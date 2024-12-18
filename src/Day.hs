@@ -2,6 +2,7 @@
 module Day ( Solver(..)
            , Day(..)
            , part
+           , partStr
            -- Re-exports to avoid including those every day
            , Generic
            , ToJSON
@@ -24,3 +25,6 @@ data Day a b = Day { parser  :: Parser a
 
 part :: Int -> (a -> b) -> (Text, Solver a b)
 part n x = (pack ("part" <> show n), ShowSolver x)
+
+partStr :: Int -> (a -> String) -> (Text, Solver a b)
+partStr n x = (pack ("part" <> show n), StringSolver x)

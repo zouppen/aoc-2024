@@ -11,7 +11,7 @@ import Day
 
 task :: Day CPU Int
 task = Day { parser  = cpuParse
-           , solvers = [ ("part1", StringSolver $ intercalate "," . map show . runAndOutput)
+           , solvers = [ partStr 1 $ intercalate "," . map show . runAndOutput
                        , part 2 $ findQuine
                        ]
            }
