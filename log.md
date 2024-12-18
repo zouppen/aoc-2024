@@ -474,9 +474,9 @@ complete part 1.
 In part 2 I was, once again trying brute-force first. Then, after
 finding out there's 3 bit shift in the code before jump, I found out
 that to find the
-[quine](https://en.wikipedia.org/wiki/Quine_(computing)), the input
-value has to be $3 \text{ bits} \times \text{code length} = 48 \text{
-bits}$, which is way too large value to bruteforced.
+[quine](https://en.wikipedia.org/wiki/Quine_(computing)), the initial
+register A value has to be $3 \text{ bits} \times \text{code length} =
+48 \text{ bits}$ wide, which is way too large value to bruteforced.
 
 I manually transpiled the code in my puzzle input from the Elf machine
 to Haskell, changed variable names a little bit and got:
