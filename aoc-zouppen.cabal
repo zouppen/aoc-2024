@@ -40,6 +40,7 @@ Executable aoc-zouppen-2024
     Day14
     Day15
     Day16
+    Day17
     Grid
     GridTools
     Tonttu
@@ -47,6 +48,7 @@ Executable aoc-zouppen-2024
     Wastl
   Build-Depends:
     base >= 4.9.0.0 && < 5,
+    array ^>= 0.5,
     attoparsec ^>= 0.14,
     aeson ^>= 2.0 || ^>= 2.1,
     bytestring ^>= 0.10 || ^>= 0.11,

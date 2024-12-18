@@ -5,9 +5,10 @@ module Day ( Solver(..)
            -- Re-exports to avoid including those every day
            , Generic
            , ToJSON
+           , toJSON
            ) where
 
-import Data.Aeson (ToJSON)
+import Data.Aeson (ToJSON, toJSON)
 import Data.Attoparsec.ByteString (Parser)
 import Data.Text (Text, pack)
 import GHC.Generics (Generic)

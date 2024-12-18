@@ -1,63 +1,102 @@
-{-# LANGUAGE DeriveGeneric, RecordWildCards, TupleSections #-}
-module Day16 where
+{-# LANGUAGE DeriveGeneric, RecordWildCards, OverloadedStrings #-}
+module Day17 where
 
-import Control.Applicative
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString.Char8 hiding (takeWhile)
 import qualified Data.Array as A
 import Data.Bits
-import Data.List (intercalate)
+import Data.List (intercalate, tails)
 
 import Day
-import Grid
 
--- pt 1 ans
--- intercalate "," $ map show $ reverse $ output $ last $ run startState
-
-startState :: CPU
-startState = CPU 64751475 0 0 0 (A.listArray (0, 15) [2,4,1,2,7,5,4,5,1,3,5,5,0,3,3,0]) []
-
-exampleState = CPU 729 0 0 0 (A.listArray (0,5) [0,1,5,4,3,0]) []
+task :: Day CPU Int
+task = Day { parser  = cpuParse
+           , solvers = [ ("part1", StringSolver $ intercalate "," . map show . runAndOutput)
+                       , part 2 $ findQuine
+                       ]
+           }
 
 data CPU = CPU { regA    :: Int
                , regB    :: Int
                , regC    :: Int
                , ip      :: Int
-               , program :: A.Array Int Int
+               , progmem :: Progmem
                , output  :: [Int]
-               } deriving (Show)
+               } deriving (Show, Generic)
 
+newtype Progmem = Progmem (A.Array Int Int) deriving (Show)
+
+instance ToJSON CPU
+
+instance ToJSON Progmem where
+  toJSON (Progmem a) = toJSON $ A.elems a
+
+-- Parser
+
+cpuParse :: Parser CPU
+cpuParse = do
+  _ <- string "Register A: "
+  regA <- decimal
+  _ <- string "\nRegister B: "
+  regB <- decimal
+  _ <- string "\nRegister C: "
+  regC <- decimal
+  _ <- string "\n\nProgram: "
+  prog <- decimal `sepBy` char ','
+  _ <- string "\n"
+  endOfInput
+  pure CPU{ progmem = Progmem $ A.listArray (0, length prog-1) prog
+          , ip = 0, output = mempty, ..
+          }
+
+-- |Run one instruction on the Elf CPU and return the new CPU state.
 step :: CPU -> CPU
-step m = case program m A.! ip m of
-  0 -> n{ regA = regA m `div` (2^(combo m)) }
-  1 -> n{ regB = regB m `xor` lit m }
-  2 -> n{ regB = combo m .&. 0x7 }
-  3 -> if regA m == 0
+step cur@CPU{..} = case prog A.! ip of
+  0 -> n{ regA = regA .>>. combo }
+  1 -> n{ regB = regB `xor` lit }
+  2 -> n{ regB = combo .&. 0x7 }
+  3 -> if regA == 0
        then n -- Let IP increase
-       else m{ ip = lit m }
-  4 -> n{ regB = regB m `xor` regC m }
-  5 -> n{ output = (combo m .&. 0x7) : output m }
-  6 -> n{ regB = regA m `div` (2^(combo m)) }
-  7 -> n{ regC = regA m `div` (2^(combo m)) }
-  _ -> error "slnt"
-  where n = m{ ip = ip m + 2}
+       else n{ ip = lit }
+  4 -> n{ regB = regB `xor` regC }
+  5 -> n{ output = (combo .&. 0x7) : output }
+  6 -> n{ regB = regA .>>. combo }
+  7 -> n{ regC = regA .>>. combo }
+  _ -> error "Illegal instruction"
+  where n = cur{ ip = ip+2}
+        Progmem prog = progmem
+        lit = prog A.! (ip+1)
+        combo = case prog A.! (ip+1) of
+          4 -> regA
+          5 -> regB
+          6 -> regC
+          7 -> error "illegal combo operand"
+          a -> a
 
-isRunning :: CPU -> Bool
-isRunning m = let (_, end) = A.bounds $ program m
-              in ip m < end
+runToHalt :: CPU -> [CPU]
+runToHalt = takeWhile isRunning . iterate step
+  where isRunning m = let Progmem prog = progmem m
+                          (_, end) = A.bounds prog
+                      in ip m < end
 
-run :: CPU -> [CPU]
-run = takeWhile isRunning . (iterate step)
+runAndOutput :: CPU -> [Int]
+runAndOutput = reverse . output . last . runToHalt
 
-runAndOutput = reverse . output . last . run
+-- Part 2
 
-lit :: CPU -> Int
-lit m = program m A.! (ip m+1)
+-- |Tries to reconstruct valid inputs from given outputs, assuming
+-- there is a specific bit shift of three.
+back :: Eq a => (Int -> a) -> [Int] -> a -> [Int]
+back test cs expect = do
+  c <- cs
+  x <- [0..(bit bitWidth)-1]
+  let a = c .<<. bitWidth .|. x
+  guard $ test a == expect
+  pure a
+  where bitWidth = 3
 
-combo :: CPU -> Int
-combo m = case program m A.! (ip m+1) of
-  4 -> regA m
-  5 -> regB m
-  6 -> regC m
-  7 -> error "illegel combo operand"
-  n -> n
+findQuine :: CPU -> Int
+findQuine cpu = minimum $ foldl (back tester) [0] backList
+  where tester x = runAndOutput $ cpu{regA = x}
+        backList = tail $ reverse $ tails $ A.elems prog
+        Progmem prog = progmem cpu

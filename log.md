@@ -471,9 +471,9 @@ First, I implemented the Elf computer as a function `step` which
 basically runs one instruction at a time. This was necessary to
 complete part 1.
 
-In part 2 I was, once again trying brute-force first. Then, after
-finding out there's 3 bit shift in the code before jump, I found out
-that to find the
+In part 2 I was, once again trying to bruteforce first. Then, while my
+CPU fan was singing Christmas carols I found out there's 3 bit shift
+in the code before jump. To find the
 [quine](https://en.wikipedia.org/wiki/Quine_(computing)), the initial
 register A value has to be $3 \text{ bits} \times \text{code length} =
 48 \text{ bits}$ wide, which is way too large value to bruteforced.
@@ -500,5 +500,8 @@ least one should be, or the puzzle is insolvable.
 So, I defined function `back` which takes a test function (the "CPU"),
 possible c values and outputs valid a values. This is iterated until
 quine is constructed.
+
+Run time 4 milliseconds. Development time... don't ask? Maybe 10
+hours. AoC burnout intensifies...
 
 View my code: [Day17.hs](src/Day17.hs)
