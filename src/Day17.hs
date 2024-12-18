@@ -63,7 +63,7 @@ step cur@CPU{..} = case prog A.! ip of
   6 -> n{ regB = regA .>>. combo }
   7 -> n{ regC = regA .>>. combo }
   _ -> error "Illegal instruction"
-  where n = cur{ ip = ip+2}
+  where n = cur{ ip = ip+2 }
         Progmem prog = progmem
         lit = prog A.! (ip+1)
         combo = case prog A.! (ip+1) of
