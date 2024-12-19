@@ -543,7 +543,7 @@ that would lead to:
 And there's your answer.
 
 The second part required to go back to basics about what the computing
-is, what a algoritmic complexity is, and most importantly, what the
+is, what algoritmic complexity is, and most importantly, what is the
 meaning of humans in the timeline of the evolution is.
 
 So many hours before I got the clue but the answer was 78 lines of
