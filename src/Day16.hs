@@ -45,8 +45,8 @@ cell g = anyChar >>= \c -> case c of
 
 -- |I heard you like list monad so I put list in your list so you can
 -- iterate while you iterate.
-toEdges :: Grid Arena -> [Edge Node Int]
-toEdges g = do
+toGraph :: Grid Arena -> EasyGraph Node Int
+toGraph g = easyGraph $ do
   -- For each waypoint
   me <- S.toList $ ways $ stuff g
   -- To every direction
@@ -79,7 +79,7 @@ toEdges g = do
     else neighs <> turns
 
 poroDijkstra :: Grid Arena -> Int
-poroDijkstra g = case dijkstraLen (toEdges g) start End of
+poroDijkstra g = case dijkstraLen (toGraph g) start End of
                    Nothing -> error "No route found"
                    Just a  -> a
   where start = Node { nodePos = head $ starts $ stuff $ g

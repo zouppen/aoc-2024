@@ -44,8 +44,8 @@ cell = do
 
 -- Logic part
 
-toEdges :: Grid Coords -> Int -> [Edge Coord Int]
-toEdges Grid{..} pivot = do
+toGraph :: Grid Coords -> Int -> EasyGraph Coord Int
+toGraph Grid{..} pivot = easyGraph $ do
   y <- [0..rows-1]
   x <- [0..cols-1]
   let me = (x,y)
@@ -60,7 +60,7 @@ toEdges Grid{..} pivot = do
         isEmpty x = S.notMember x $ S.fromList $ A.elems subArr
 
 routeLen :: Grid Coords -> Int -> Maybe Int
-routeLen g n = dijkstraLen (toEdges g n) (0,0) (cols g-1, rows g-1)
+routeLen g n = dijkstraLen (toGraph g n) (0,0) (cols g-1, rows g-1)
 
 -- Part 1
 

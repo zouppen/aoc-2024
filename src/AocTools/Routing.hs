@@ -30,11 +30,10 @@ nodeByLabel eg a = S.lookupIndex a $ nodeSet eg
 labelByNode :: EasyGraph a b -> Node -> Maybe a
 labelByNode eg = lab $ graph eg
 
--- |Finds a shortest path. Uses 'easyGraph' internally, see the docs.
-dijkstraLen :: (Ord a, Real b) => [Edge a b] -> a -> a -> Maybe b
-dijkstraLen edges start end = spLength (n "Start" start) (n "End" end) graph
-  where eg@EasyGraph{..} = easyGraph edges
-        n name node = case nodeByLabel eg node of
+-- |Finds shortest path length.
+dijkstraLen :: (Ord a, Real b) => EasyGraph a b -> a -> a -> Maybe b
+dijkstraLen eg start end = spLength (n "Start" start) (n "End" end) (graph eg)
+  where n name node = case nodeByLabel eg node of
           Just a -> a
           Nothing -> error $ name <>" node is not part of the graph"
 
