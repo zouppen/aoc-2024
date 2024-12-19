@@ -19,6 +19,7 @@ import qualified Day15
 import qualified Day16
 import qualified Day17
 import qualified Day18
+import qualified Day19
 
 tontut :: [Maybe Tonttu]
 tontut = [ t Day01.task
@@ -39,4 +40,5 @@ tontut = [ t Day01.task
          , t Day16.task
          , t Day17.task
          , t Day18.task
+         , t Day19.task
          ]
