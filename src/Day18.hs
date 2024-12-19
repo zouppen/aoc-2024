@@ -44,7 +44,7 @@ cell = do
 
 -- Logic part
 
-toEdges :: Grid Coords -> Int -> [Edge Coord]
+toEdges :: Grid Coords -> Int -> [Edge Coord Int]
 toEdges Grid{..} pivot = do
   y <- [0..rows-1]
   x <- [0..cols-1]

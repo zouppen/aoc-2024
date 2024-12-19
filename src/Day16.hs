@@ -45,7 +45,7 @@ cell g = anyChar >>= \c -> case c of
 
 -- |I heard you like list monad so I put list in your list so you can
 -- iterate while you iterate.
-toEdges :: Grid Arena -> [Edge Node]
+toEdges :: Grid Arena -> [Edge Node Int]
 toEdges g = do
   -- For each waypoint
   me <- S.toList $ ways $ stuff g
