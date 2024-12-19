@@ -20,15 +20,15 @@ data Edge a = Edge { fromNode :: a
 -- library. Abstracts the the node numbering and stuff. Just give
 -- edges and nodes are created automatically.
 dijkstraLen :: Ord a => [Edge a] -> a -> a -> Maybe Int
-dijkstraLen edges start end = spLength (edgeNum start) (edgeNum end) graph
+dijkstraLen edges start end = spLength (nodeNum start) (nodeNum end) graph
   where
-    edgeSet = S.fromList [ node
+    nodeSet = S.fromList [ node
                          | Edge{..} <- edges
                          , node     <- [fromNode, toNode]
                          ]
-    edgeNum e = S.findIndex e edgeSet
-    nodes = [(n, ()) | n <- [0..length edgeSet-1]]
-    edges' = [ (edgeNum fromNode, edgeNum toNode, cost)
+    nodeNum e = S.findIndex e nodeSet
+    nodes = [(n, ()) | n <- [0..length nodeSet-1]]
+    edges' = [ (nodeNum fromNode, nodeNum toNode, cost)
              | Edge{..} <- edges
              ]
     graph = mkGraph nodes edges' :: Gr () Int
