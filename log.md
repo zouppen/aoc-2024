@@ -527,3 +527,19 @@ are heading to dead ends, so there are some hidden efficiency around
 the corner, too.
 
 View my code: [Day18.hs](src/Day18.hs)
+
+## Day 19, Thursday
+
+Assignment: [Linen Layout](https://adventofcode.com/2024/day/19)
+
+First, I got easy first star by just editing the input to a
+[regex](https://en.wikipedia.org/wiki/Regular_expression) by replacing
+`, ` in the first line with `|` and adding the match rule around
+it. With the example in the puzzle and puzzle input in `inputfile`,
+that would lead to:
+
+`grep '^(r|wr|b|g|bwu|rb|gb|br)+$' inputfile | wc`
+
+And there's your answer.
+
+View my code: [Day19.hs](src/Day19.hs)
