@@ -4,15 +4,18 @@ module Day16 where
 import Control.Applicative
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString.Char8
+import qualified Data.Map.Strict as M
 import qualified Data.Set as S
 
 import Day
 import AocTools.Grid
 import AocTools.Routing
+import AocTools.Everyday (minFold)
 
 task :: Day (Grid Arena) Int
 task = Day { parser  = gridParser cell (Arena mempty mempty mempty) <* endOfInput
            , solvers = [ part 1 poroDijkstra
+                       , part 2 onShortestPaths
                        ]
            }
 
@@ -79,9 +82,23 @@ toGraph g = easyGraph $ do
     else neighs <> turns
 
 poroDijkstra :: Grid Arena -> Int
-poroDijkstra g = case dijkstraLen (toGraph g) start End of
+poroDijkstra g = case dijkstraLen (toGraph g) (startNode g) End of
                    Nothing -> error "No route found"
                    Just a  -> a
-  where start = Node { nodePos = head $ starts $ stuff $ g
-                     , nodeDir = (1,0) -- East
-                     }
+
+startNode :: Grid Arena -> Node
+startNode g = Node { nodePos = head $ starts $ stuff $ g
+                   , nodeDir = (1,0) -- East
+                   }
+
+-- |Run dijkstra from start and from end (with edges reversed) and get
+-- an intersection of those two graphs, returning all unique
+-- coordinates which are part of some shortest path.
+onShortestPaths :: Grid Arena -> Int
+onShortestPaths g = length $ spotCoords
+  where graph = toGraph g
+        normal = M.fromList $ dijkstraLens graph (startNode g)
+        revers = M.fromList $ dijkstraLens (revGraph graph) End
+        walkable = M.intersectionWith (+) normal revers
+        (_, spotNodes) = M.foldrWithKey (minFold compare) (maxBound, []) walkable
+        spotCoords = S.fromList $ map nodePos $ filter (End/=) spotNodes

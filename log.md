@@ -448,7 +448,8 @@ View my code: [Day15.hs](src/Day15.hs)
 Assignment: [Reindeer Maze](https://adventofcode.com/2024/day/16)
 
 First for some stupid reason I implemented my own shortest path
-algoritm but quicly found it's algorithmically complex. Was able to solve simple cases but not the real input. Too much time spent here.
+algoritm but quicly found it's algorithmically complex. Was able to
+solve simple cases but not the real input. Too much time spent here.
 
 Then I spend much time reformatting my code to produce a graph instead
 which was fed to 
@@ -460,6 +461,19 @@ IDs by sorting the graph material to a Set and then numbering them.
 I learned how to use the graph library and my first shortest path
 algorithm task after my Master's degree and it was 14 years ago. Also,
 I can now say I master practical, real world use of list monad.
+
+**Update from December 20th:** Part 2 finished by using a clever
+bidirectional Dijkstra. First, shortest paths are calculated to all
+nodes normally, then edge directions are reversed and shortest routes
+are calculated from end to start instead. Then, intersection of those
+two tables are made with sum function, basically getting the shortest
+path length which ges via that node.
+
+Then, get the ones with smallest numbers, extract their coordinates,
+deduplicate, and count. The only gotcha is that End is extra node
+added earlier in my code which needs to be filtered out before counting.
+
+This took me some time but managed to not to spoil myself on Reddit.
 
 View my code: [Day16.hs](src/Day16.hs)
 
