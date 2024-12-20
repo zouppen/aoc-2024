@@ -448,7 +448,7 @@ View my code: [Day15.hs](src/Day15.hs)
 Assignment: [Reindeer Maze](https://adventofcode.com/2024/day/16)
 
 First for some stupid reason I implemented my own shortest path
-algoritm but quicly found it's algorithmically complex. Was able to
+algoritm but quickly found it's algorithmically way too complex. Was able to
 solve simple cases but not the real input. Too much time spent here.
 
 Then I spend much time reformatting my code to produce a graph instead
