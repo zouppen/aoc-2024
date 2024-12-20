@@ -608,9 +608,10 @@ self-explaining in the code, but here's a non-edgecasing version:
 For every reachable node (x,y position there's a walkway) we know the
 shortest path both from the start and the end. We iterate through
 every node (*a*) and there we look every node in the given distance of
-20 cells (*b*). The total "cheated distance" is $dist(start,a) +
-dist(a,b) + dist(b,end)$. Then we count cheated distances which are
-$\leq dist(start,end) - 100$.
+20 cells (*b*). The total "cheated distance" is $sp(start, a) +
+straight(a, b) + sp(b, end)$ (here *sp* stands for shortest path,
+e.g. Dijkstra algorithm). Then we count the number of cheats which
+have length $\leq dijkstra(start, end) - 100$.
 
 Then I refactored the hacky part 1bruteforcer to use the algorithm
 from part 2, so the final run times were 0.13 seconds for part 1 and
