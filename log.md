@@ -463,7 +463,7 @@ algorithm task after my Master's degree and it was 14 years ago. Also,
 I can now say I master practical, real world use of list monad.
 
 **Update from December 20th:** Part 2 finished by using a clever
-bidirectional Dijkstra. First, shortest paths are calculated to all
+bidirectional Dijkstra trick. First, shortest paths are calculated to all
 nodes normally, then edge directions are reversed and shortest routes
 are calculated from end to start instead. Then, intersection of those
 two tables are made with sum function, basically getting the shortest
