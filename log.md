@@ -76,7 +76,7 @@ Started over 4 times after getting super desperate about how to
 process this in a functional language.
 
 Noticed that Text index function is O(n) rather than O(1) so decided
-to fix the "framework" to use ByteStrigs instead of Text. This
+to fix the "framework" to use ByteStrings instead of Text. This
 should've been the first thought and not an afterthought since AoC
 never uses weird UTF-8 input. Let's see if tomorrow there will be 🎅
 in the input and I'll start spinning again.
@@ -128,7 +128,7 @@ a warm fuzzy feeling, like a glass of warm mulled wine. 🍵
 
 Afterwards, while cleaning up code, I noticed I had a bug in the
 comparator, where I did compare `a < b` correctly but not `a > b` because
-of quick copypasting around. Well, it didn't hit, but a fixed version is
+of quick copy-pasting around. Well, it didn't hit, but a fixed version is
 now in the repo.
 
 PS. In case you've wondered why there are JSON instances in my code
@@ -448,7 +448,7 @@ View my code: [Day15.hs](src/Day15.hs)
 Assignment: [Reindeer Maze](https://adventofcode.com/2024/day/16)
 
 First for some stupid reason I implemented my own shortest path
-algoritm but quickly found it's algorithmically way too complex. Was able to
+algorithm but quickly found it's algorithmically way too complex. Was able to
 solve simple cases but not the real input. Too much time spent here.
 
 Then I spend much time reformatting my code to produce a graph instead
@@ -557,8 +557,8 @@ that would lead to:
 And there's your answer.
 
 The second part required to go back to basics about what the computing
-is, what algoritmic complexity is, and most importantly, what the
-significance of a single human being is on the timeline of our galaxy
+is, what algorithmic complexity is, and most importantly, what the
+significance of a single human being is on the time line of our galaxy
 and the entire universe.
 
 So many hours before I got the clue but the answer was 78 lines of
@@ -596,7 +596,7 @@ answer to get the second part visible was clearly a winning
 move. Making the code more generic in the way I didn't have a clue
 would've taken way longer.
 
-Had a lunch and other life related obstackles and then on the lunch
+Had a lunch and other life related obstacles and then on the lunch
 break I had a clue to the impossible-sounding assignment. The wallhack
 could be done so that we do the same than in day 16 and calculate
 shortest distances to every node from both the start and the end. In
