@@ -50,20 +50,21 @@ toGraph Grid{..} = easyGraph $ do
 
 wallhack :: Int -> Int -> Grid Arena -> [(Coord, Coord, Int)]
 wallhack duration saveLimit g = do
-  cheatStart <- S.toList $ ways $ stuff g
-  cheatEnd <- S.toList $ ways $ stuff g
+  (cheatStart, startElapsed) <- dijkstraLens graph start
+  -- Diamond-shaped search pattern around cheatStart point
+  cheatEnd <- diamond duration 1 cheatStart
+  endRemaining <- maybe empty pure $ M.lookup cheatEnd revers
   let cheatDist = distance cheatStart cheatEnd
-      totalDist = (normal M.! cheatStart) + cheatDist + (revers M.! cheatEnd)
-  guard $ cheatDist <= duration
-  guard $ totalDist <= noCheatDist - saveLimit
+      totalDist = startElapsed + cheatDist + endRemaining
+  -- Don't even show cheats which aren't good enough
+  guard $ totalDist <= origShortest - saveLimit
   pure (cheatStart, cheatEnd, totalDist)
   where [start] = starts $ stuff g
         [end] = ends $ stuff g
         graph = toGraph g
         -- In reverse search we save time by not reversing the edges
         -- since it's already bidirectional.
-        normal = M.fromList $ dijkstraLens graph start
         revers = M.fromList $ dijkstraLens graph end
         -- Distance without cheating
-        noCheatDist = normal M.! end
+        origShortest = revers M.! start
         distance (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
