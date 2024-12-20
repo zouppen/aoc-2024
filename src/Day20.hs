@@ -10,6 +10,7 @@ import qualified Data.Set as S
 import Day
 import AocTools.Grid
 import AocTools.Routing
+import AocTools.Everyday (diamond)
 
 task :: Day (Grid Arena) Int
 task = Day { parser  = gridParser cell (Arena mempty mempty mempty) <* endOfInput
@@ -42,12 +43,9 @@ cell g = anyChar >>= \c -> case c of
 
 toGraph :: Grid Arena -> EasyGraph Coord Int
 toGraph Grid{..} = easyGraph $ do
-  me <- S.toList $ ways stuff
-  dir <- unitCoords
-  pure $ Edge{ fromNode = me
-             , toNode   = addCoord me dir
-             , cost     = 1
-             }
+  fromNode <- S.toList $ ways stuff
+  toNode <- diamond 1 1 fromNode
+  pure $ Edge{cost = 1, ..}
 
 wallhack :: Int -> Int -> Grid Arena -> [(Coord, Coord, Int)]
 wallhack duration saveLimit g = do

@@ -9,7 +9,7 @@ import Data.Maybe (isNothing)
 import qualified Data.Set as S
 
 import Day
-import AocTools.Everyday (bsearch)
+import AocTools.Everyday (bsearch, diamond)
 import AocTools.Grid
 import AocTools.Routing
 
@@ -48,13 +48,10 @@ toGraph :: Grid Coords -> Int -> EasyGraph Coord Int
 toGraph Grid{..} pivot = easyGraph $ do
   y <- [0..rows-1]
   x <- [0..cols-1]
-  let me = (x,y)
-  guard $ isEmpty me
-  dir <- unitCoords
-  pure $ Edge{ fromNode = me
-             , toNode   = addCoord me dir
-             , cost     = 1
-             }
+  let fromNode = (x,y)
+  guard $ isEmpty fromNode
+  toNode <- diamond 1 1 fromNode
+  pure $ Edge{cost = 1, ..}
   where Coords arr = stuff
         subArr = A.ixmap (0, pivot-1) id arr
         isEmpty x = S.notMember x $ S.fromList $ A.elems subArr
