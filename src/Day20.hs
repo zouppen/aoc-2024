@@ -10,7 +10,7 @@ import qualified Data.Set as S
 import Day
 import AocTools.Grid
 import AocTools.Routing
-import AocTools.Everyday (diamond)
+import AocTools.Everyday (diamond, expectOne, liftMaybe)
 
 task :: Day Arena Int
 task = Day { parser  = stuff <$> gridParser cell (Arena mempty mempty mempty) <* endOfInput
@@ -42,11 +42,11 @@ cell g = anyChar >>= \c -> case c of
 -- Logic part
 
 toGraph :: Arena -> EasyGraph Coord Int
-toGraph Arena{..} = easyGraph $ do
-  fromNode <- S.toList ways
-  toNode <- diamond 1 1 fromNode
-  guard $ S.member toNode ways -- Target must exist
-  pure $ Edge{cost = 1, ..}
+toGraph Arena{..} = easyGraph [ Edge{cost = 1, ..}
+                              | fromNode <- S.toList ways
+                              , toNode <- diamond 1 1 fromNode
+                              , S.member toNode ways -- Target must exist
+                              ]
 
 wallhack :: Int -> Int -> Arena -> [(Coord, Coord, Int)]
 wallhack duration saveLimit arena = do
@@ -54,14 +54,14 @@ wallhack duration saveLimit arena = do
   -- Diamond-shaped search pattern around cheatStart point. Not
   -- looking direct neighbours (hollowness magic number 2)
   cheatEnd <- diamond duration 2 cheatStart
-  endRemaining <- maybe empty pure $ M.lookup cheatEnd revers
+  endRemaining <- liftMaybe $ M.lookup cheatEnd revers
   let cheatDist = distance cheatStart cheatEnd
       totalDist = startElapsed + cheatDist + endRemaining
   -- Don't even show cheats which aren't good enough
   guard $ totalDist <= origShortest - saveLimit
   pure (cheatStart, cheatEnd, totalDist)
-  where [start] = starts arena
-        [end] = ends arena
+  where start = expectOne "start point" $ starts arena
+        end = expectOne "end point" $ ends arena
         distance (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
         graph = toGraph arena
         -- In reverse search we save time by not reversing the edges

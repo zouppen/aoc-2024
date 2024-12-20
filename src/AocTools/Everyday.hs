@@ -1,11 +1,15 @@
 -- |Functions which are useful almost every day.
 module AocTools.Everyday
   ( bsearch
+  , expectOne
   , diamond
+  , liftMaybe
   , minFold
   ) where
 
+import Control.Applicative
 import Control.Monad (guard)
+import Data.Foldable (toList)
 import Data.Bits
 
 bsearch :: (Ord a, Bits a, Num a) => (a -> Bool) -> a -> a -> a
@@ -36,3 +40,16 @@ diamond radius hollow (xOrigin, yOrigin) = do
   xDelta <- [-xOff..xOff]
   guard $ abs xDelta + abs yDelta >= hollow
   pure (xOrigin + xDelta, yOrigin + yDelta)
+
+-- |Expects a singleton value. Give a more descriptive error message
+-- if not so. Avoids iterating over an infinite list if one is given.
+expectOne :: Foldable t => String -> t a -> a
+expectOne name as = case toList as of
+  [a] -> a
+  []  -> f "none"
+  _   -> f "many"
+  where f m = error $ "Expecting a singleton " <> name <> " but there are " <> m
+
+-- | Lift a maybe to an Alternative. Copied from Agda.
+liftMaybe :: Alternative f => Maybe a -> f a
+liftMaybe = maybe empty pure
