@@ -467,7 +467,7 @@ bidirectional Dijkstra trick. First, shortest paths are calculated to all
 nodes normally, then edge directions are reversed and shortest routes
 are calculated from end to start instead. Then, intersection of those
 two tables are made with sum function, basically getting the shortest
-path length which ges via that node.
+path length which goes via that node.
 
 Then, get the ones with smallest numbers, extract their coordinates,
 deduplicate, and count. The only gotcha is that End is extra node
