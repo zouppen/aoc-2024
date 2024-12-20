@@ -614,8 +614,8 @@ e.g. Dijkstra algorithm and *direct* for a walking distance when there
 would be no obstacles). Then we count the number of cheats which have
 length $\leq dijkstra(start, end) - 100$.
 
-Then I refactored the hacky part 1bruteforcer to use the algorithm
-from part 2, so the final run times were 0.13 seconds for part 1 and
+Then I replaced the hacky bruteforcer I did in part 1 with the efficient
+algorithm from part 2. The final run times were 0.13 seconds for part 1 and
 1.1 seconds for part 2. The difference comes not from running Dijkstra
 algorithm (it is run twice in both parts), but the number of neighbour
 lookups (836 in part 2 and only 8 in part 1). So doubling the cheat
