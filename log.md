@@ -565,9 +565,9 @@ So many hours before I got the clue but the answer was 78 lines of
 code including comments and the runtime is less than a second.
 
 I ended up to write generator for a graph and then count possible
-routes from the end point of the graph back to the start eleement and
+routes from the end point of the graph back to the start element and
 summing all the routes together, avoiding the branching which would've
-otherwise occured and made it impossible to obtain the answer in a
+otherwise occurred and made it impossible to obtain the answer in a
 lifetime of an average human life.
 
 View my code: [Day19.hs](src/Day19.hs)
