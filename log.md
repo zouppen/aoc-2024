@@ -576,6 +576,56 @@ View my code: [Day19.hs](src/Day19.hs)
 
 Assignment: [Race Condition](https://adventofcode.com/2024/day/20)
 
-Bruteforce wallhack 6 min 44 sec with 12 cores.
+First obvious note from the assignment is that the reindeer maze from
+[day 16](https://adventofcode.com/2024/day/16)
+would be a good boilerplate code. Another note is that all references to
+time can be thought as a distance like in RAM Run assignment from
+[day 18](https://adventofcode.com/2024/day/18)
+"RAM Run" assignment.
+
+Part 1 started with the regular art of bruteforcing. Take one wall
+block away, then find shortest route, try another one. This is
+fortunately dividable to multiple independent workers. Bruteforce
+wallhack with threading on 12 cores took 6 min 44 sec. There's the
+first star, took about an hour since I was only partially awake in the
+morning.
+
+I looked to part 2 assignment and it was clearly no longer brute
+force. I didn't have a clue where part 2 would go, so bruteforcing
+answer to get the second part visible was clearly a winning
+move. Making the code more generic in the way I didn't have a clue
+would've taken way longer.
+
+Had a lunch and other life related obstackles and then on the lunch
+break I had a clue to the impossible-sounding assignment. The wallhack
+could be done so that we do the same than in day 16 and calculate
+shortest distances to every node from both the start and the end. In
+this case even reversing edges weren't needed since the graph was
+bidirectional (if you walk somewhere you can walk back without any
+turn penalty unlike in day 16. The actual algorithm is probably
+self-explaining in the code, but here's a non-edgecasing version:
+
+For every reachable node (x,y position there's a walkway) we know the
+shortest path both from the start and the end. We iterate through
+every node (*a*) and there we look every node in the given distance of
+20 cells (*b*). The total "cheated distance" is $dist(start,a) +
+dist(a,b) + dist(b,end)$. Then we count cheated distances which are
+$\leq dist(start,end) - 100$.
+
+Then I refactored the hacky part 1bruteforcer to use the algorithm
+from part 2, so the final run times were 0.13 seconds for part 1 and
+1.1 seconds for part 2. The difference comes not from running Dijkstra
+algorithm (it is run twice in both parts), but the number of neighbour
+lookups (836 in part 2 and only 8 in part 1). So doubling the cheat
+duration quadruples the number of lookups.
+
+After finishing the part 2 with an efficient algorithm I noted that
+the bruteforcer could've been used for part 2 as well. Instead of
+taking a single wall away I could've exploded everything for a given
+distance from each cell and run Dijkstra algorithm from start to end
+for every cell there is. That would've taken around 10 minutes on my
+PC, so it would've been a winning choice over efficient code, if only
+measuring the development time plus time to run the code once, which
+is the AoC goal after all.
 
 View my code: [Day20.hs](src/Day20.hs)

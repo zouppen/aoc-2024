@@ -62,10 +62,10 @@ wallhack duration saveLimit arena = do
   pure (cheatStart, cheatEnd, totalDist)
   where [start] = starts arena
         [end] = ends arena
+        distance (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
         graph = toGraph arena
         -- In reverse search we save time by not reversing the edges
         -- since it's already bidirectional.
         revers = M.fromList $ dijkstraLens graph end
         -- Distance without cheating
         origShortest = revers M.! start
-        distance (x1,y1) (x2,y2) = abs (x1-x2) + abs (y1-y2)
