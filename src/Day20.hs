@@ -51,8 +51,9 @@ toGraph Grid{..} = easyGraph $ do
 wallhack :: Int -> Int -> Grid Arena -> [(Coord, Coord, Int)]
 wallhack duration saveLimit g = do
   (cheatStart, startElapsed) <- dijkstraLens graph start
-  -- Diamond-shaped search pattern around cheatStart point
-  cheatEnd <- diamond duration 1 cheatStart
+  -- Diamond-shaped search pattern around cheatStart point. Not
+  -- looking direct neighbours (hollowness magic number 2)
+  cheatEnd <- diamond duration 2 cheatStart
   endRemaining <- maybe empty pure $ M.lookup cheatEnd revers
   let cheatDist = distance cheatStart cheatEnd
       totalDist = startElapsed + cheatDist + endRemaining
