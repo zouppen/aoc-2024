@@ -45,6 +45,7 @@ toGraph :: Grid Arena -> EasyGraph Coord Int
 toGraph Grid{..} = easyGraph $ do
   fromNode <- S.toList $ ways stuff
   toNode <- diamond 1 1 fromNode
+  guard $ S.member toNode $ ways stuff -- Target must exist
   pure $ Edge{cost = 1, ..}
 
 wallhack :: Int -> Int -> Grid Arena -> [(Coord, Coord, Int)]
