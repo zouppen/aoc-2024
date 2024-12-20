@@ -12,8 +12,8 @@ import AocTools.Grid
 import AocTools.Routing
 import AocTools.Everyday (diamond)
 
-task :: Day (Grid Arena) Int
-task = Day { parser  = gridParser cell (Arena mempty mempty mempty) <* endOfInput
+task :: Day Arena Int
+task = Day { parser  = stuff <$> gridParser cell (Arena mempty mempty mempty) <* endOfInput
            , solvers = [ part 1 $ length . wallhack 2 100
                        , part 2 $ length . wallhack 20 100
                        ]
@@ -41,15 +41,15 @@ cell g = anyChar >>= \c -> case c of
 
 -- Logic part
 
-toGraph :: Grid Arena -> EasyGraph Coord Int
-toGraph Grid{..} = easyGraph $ do
-  fromNode <- S.toList $ ways stuff
+toGraph :: Arena -> EasyGraph Coord Int
+toGraph Arena{..} = easyGraph $ do
+  fromNode <- S.toList ways
   toNode <- diamond 1 1 fromNode
-  guard $ S.member toNode $ ways stuff -- Target must exist
+  guard $ S.member toNode ways -- Target must exist
   pure $ Edge{cost = 1, ..}
 
-wallhack :: Int -> Int -> Grid Arena -> [(Coord, Coord, Int)]
-wallhack duration saveLimit g = do
+wallhack :: Int -> Int -> Arena -> [(Coord, Coord, Int)]
+wallhack duration saveLimit arena = do
   (cheatStart, startElapsed) <- dijkstraLens graph start
   -- Diamond-shaped search pattern around cheatStart point. Not
   -- looking direct neighbours (hollowness magic number 2)
@@ -60,9 +60,9 @@ wallhack duration saveLimit g = do
   -- Don't even show cheats which aren't good enough
   guard $ totalDist <= origShortest - saveLimit
   pure (cheatStart, cheatEnd, totalDist)
-  where [start] = starts $ stuff g
-        [end] = ends $ stuff g
-        graph = toGraph g
+  where [start] = starts arena
+        [end] = ends arena
+        graph = toGraph arena
         -- In reverse search we save time by not reversing the edges
         -- since it's already bidirectional.
         revers = M.fromList $ dijkstraLens graph end
