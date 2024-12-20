@@ -571,3 +571,11 @@ otherwise occurred and made it impossible to obtain the answer in a
 lifetime of an average human life.
 
 View my code: [Day19.hs](src/Day19.hs)
+
+## Day 20, Friday
+
+Assignment: [Race Condition](https://adventofcode.com/2024/day/20)
+
+Bruteforce wallhack 6 min 44 sec with 12 cores.
+
+View my code: [Day20.hs](src/Day20.hs)
