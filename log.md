@@ -691,7 +691,7 @@ algebra. First, valid pairs of *(sequence, price)* are produced, the map
 is generated with `flip const`, meaning the monkey's earlier sequence
 has precedence over later (since the the puzzle says the monkey stops
 at the first match) and then all maps are folded together using union
-with (`(+)` as the combining function (just sum the
+with `(+)` as the combining function (just sum the
 occurences). Because the winning sequence wasn't required but the
 amount of bananas, we just look for the highest value from the map,
 and there's your answer.
