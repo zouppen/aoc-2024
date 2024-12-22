@@ -631,3 +631,15 @@ measuring the development time plus time to run the code once, which
 is the AoC goal after all.
 
 View my code: [Day20.hs](src/Day20.hs)
+
+## Day 21, Saturday
+
+Assignment: [Keypad Conundrum](https://adventofcode.com/2024/day/21)
+
+View my code: [Day21.hs](src/Day21.hs)
+
+## Day 22, Sunday
+
+Assignment: [Monkey Market](https://adventofcode.com/2024/day/22)
+
+View my code: [Day22.hs](src/Day22.hs)
