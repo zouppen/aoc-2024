@@ -687,7 +687,7 @@ So simple and took me so many hours. I almost lost faith.
 
 In general this puzzle favoured high level languages such as Haskell,
 allowing to do the counting of sequences of four by using simple set
-algebra. First, valid pairs of (sequence, price) are produced, the map
+algebra. First, valid pairs of *(sequence, price)* are produced, the map
 is generated with `flip const`, meaning the monkey's earlier sequence
 has precedence over later (since the the puzzle says the monkey stops
 at the first match) and then all maps are folded together using union
@@ -697,7 +697,7 @@ amount of bananas, we just look for the highest value from the map,
 and there's your answer.
 
 Set algebra was indeed a very efficient approach. Run times: First
-part took 0.081 s and second part took 0.274 s.
+part took 0.081 seconds and second part took 0.274 seconds.
 
 So long and thanks for all the bananas!
 
