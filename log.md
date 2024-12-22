@@ -677,7 +677,7 @@ candidates _ = []
 
 I try to avoid these kind of variable messes. The problem was that I
 had `a` instead of `e` in the second of the tuple, more specifically
-this: ` ([a-b, b-c, c-d, d-e], a)` which lead tho the outcome that it
+this: <code>([a-b, b-c, c-d, d-e], **a**)</code> which lead tho the outcome that it
 didn't return the correct price value but the one before. Why I had
 `a` in the function at the first place was to count the difference
 between successive elements and it shouldn't have been used for
