@@ -636,10 +636,68 @@ View my code: [Day20.hs](src/Day20.hs)
 
 Assignment: [Keypad Conundrum](https://adventofcode.com/2024/day/21)
 
+I had a busy day and I needed to skip the puzzle.
+
 View my code: [Day21.hs](src/Day21.hs)
 
 ## Day 22, Sunday
 
 Assignment: [Monkey Market](https://adventofcode.com/2024/day/22)
+
+Day started with a 7h train trip, so I had plenty of time to hack
+around starting from 07:00 local time. After finishing part 1 the
+train started to become rather crowded, with children and grown-ups
+running around aimlessly. Soon after, the window next to me smashed
+partially. So, there was plenty of action while I was at the Monkey
+Market. Monkeys inside and outside of my computer.
+
+Happily I was compensated by 8 euro voucher because I had to change my
+seat because of the broken window. So I was distracted one more time
+because I decided to eat something on the train restaurant.
+
+Part 1 was indeed very fast to finish. It was basically getting the
+pseudorandom algorithm right and part 2 was actually doing something
+with it. With the second part I was a almost there after half an hour
+but then got totally on incorrect track, thinking the pseudorandom
+would fail for some reason and spent almost an hour reading the
+assignment alone from so many different angles if I had missed
+something important.
+
+Finally, between Oulu and Kemi I found it. I had the following
+function:
+
+```haskell
+candidates :: (Eq a, Num a) => [a] -> [([a], a)]
+candidates (a:rest@(b:c:d:e:_)) =
+  if b == e
+  then ([a-b, b-c, c-d, d-e], e) : candidates rest
+  else candidates rest
+candidates _ = []
+```
+
+I try to avoid these kind of variable messes. The problem was that I
+had `a` instead of `e` in the second of the tuple, more specifically
+this: ` ([a-b, b-c, c-d, d-e], a)` which lead tho the outcome that it
+didn't return the correct price value but the one before. Why I had
+`a` in the function at the first place was to count the difference
+between successive elements and it shoul've not be used for anything
+else. 
+
+So simple and took me so many hours. I almost lost faith.
+
+In general this puzzle favoured high level languages such as Haskell,
+allowing to do the counting of sequences of four by using simple set
+algebra. First, valid pairs of (sequence, price) are produced, the map
+is generated with `flip const`, meaning the monkey's earlier sequence
+has precedence over later (since the scanning stops at first match)
+and then all maps are folded together using union with simple summing
+(`(+)` as the combining function). Then, we just find the highest
+value, and there's the answer, because the winning sequence wasn't
+required but the amount of bananas.
+
+Set algebra was indeed a very efficient approach. Run times: First
+part took 0.081 s and second part took 0.274 s.
+
+So long and thanks for all the bananas!
 
 View my code: [Day22.hs](src/Day22.hs)
